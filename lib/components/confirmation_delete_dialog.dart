@@ -18,7 +18,7 @@ Future<bool?> showConfirmationDialog(BuildContext context, String message) {
             onPressed: () {
               Navigator.of(context).pop(true); // Dismiss the dialog and return true
             },
-            child: Text('Delete'),
+            child: Text('Delete', style: TextStyle(color: Colors.red),),
           ),
         ],
       );

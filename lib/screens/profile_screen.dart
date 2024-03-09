@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../components/confirmation_dialog.dart';
+import '../components/confirmation_delete_dialog.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen();
