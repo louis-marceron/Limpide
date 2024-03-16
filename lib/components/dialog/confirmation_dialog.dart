@@ -10,7 +10,7 @@ Future<bool?> showConfirmationDialog(BuildContext context, String message) {
         actions: <Widget>[
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop(false); // Dismiss the dialog and return false
+              Navigator.of(context).pop(false); // Dismiss the dialog and return true
             },
             child: Text('Cancel'),
           ),
@@ -18,7 +18,7 @@ Future<bool?> showConfirmationDialog(BuildContext context, String message) {
             onPressed: () {
               Navigator.of(context).pop(true); // Dismiss the dialog and return true
             },
-            child: Text('Delete', style: TextStyle(color: Colors.red),),
+            child: Text('Ok'),
           ),
         ],
       );
