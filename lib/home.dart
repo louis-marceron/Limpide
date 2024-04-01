@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'screens/profile_screen.dart'; // Import the profile screen Dart file
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen();
+  const HomeScreen(this.welcomeText, {super.key});
+  final String welcomeText;
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,8 @@ class HomeScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ProfileScreen(), // Navigate to ProfileScreen
+                  builder: (context) =>
+                      ProfileScreen(), // Navigate to ProfileScreen
                 ),
               );
             },
@@ -28,7 +30,7 @@ class HomeScreen extends StatelessWidget {
           children: [
             Image.asset('assets/dash.png'),
             Text(
-              'Welcome!',
+              welcomeText,
               style: Theme.of(context).textTheme.displaySmall,
             ),
           ],
