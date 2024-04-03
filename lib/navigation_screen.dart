@@ -27,44 +27,9 @@ class _NavigationScreenState extends State<NavigationScreen> {
   final List<int> _navigationHistory = [];
 
   @override
-  void initState() {
-    super.initState();
-    _currentPageIndex = widget._initialIndex;
-    _navigationHistory.add(widget._initialIndex);
-  }
-
-  void _selectPage(int index) {
-    setState(() {
-      _currentPageIndex = index;
-      // Add to history only if it's not the same as the current page
-      if (_navigationHistory.isEmpty || _navigationHistory.last != index) {
-        _navigationHistory.add(index);
-      }
-    });
-  }
-
-  bool _handlePop(bool didPop) {
-    // If the pop action failed, should never happen since canPop is
-    // set to true
-    if (!didPop) {
-      return false;
-    }
-
-    if (_navigationHistory.length > 1) {
-      setState(() {
-        _navigationHistory.removeLast(); // Remove current page
-        _currentPageIndex = _navigationHistory.last; // Set to previous page
-      });
-      return false; // Prevent default pop behavior
-    }
-    return true; // Allow pop if there's no history to revert to
-  }
-
-  @override
   Widget build(BuildContext context) {
-    // A PopScope is used to go to the previous children when the back
-    // action is used
     return PopScope(
+      canPop: false,
       onPopInvoked: _handlePop,
       child: Scaffold(
         body: IndexedStack(
@@ -85,5 +50,33 @@ class _NavigationScreenState extends State<NavigationScreen> {
       ),
     );
   }
-}
 
+  @override
+  void initState() {
+    super.initState();
+    _currentPageIndex = widget._initialIndex;
+    _navigationHistory.add(widget._initialIndex);
+  }
+
+  void _handlePop(bool didPop) {
+    if (_navigationHistory.length > 1) {
+      setState(() {
+        _navigationHistory.removeLast();
+        _currentPageIndex = _navigationHistory.last;
+      });
+    } else {
+      print("My navigation history:");
+      print(_navigationHistory);
+      // Navigator.of(context).pop();
+    }
+  }
+
+  void _selectPage(int index) {
+    setState(() {
+      _currentPageIndex = index;
+      if (_navigationHistory.isEmpty || _navigationHistory.last != index) {
+        _navigationHistory.add(index);
+      }
+    });
+  }
+}

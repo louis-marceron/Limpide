@@ -4,10 +4,23 @@ import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
 
+/// Default [FirebaseOptions] for use with your Firebase apps.
+///
+/// Example:
+/// ```dart
+/// import 'firebase_options.dart';
+/// // ...
+/// await Firebase.initializeApp(
+///   options: DefaultFirebaseOptions.currentPlatform,
+/// );
+/// ```
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -15,7 +28,10 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -33,21 +49,12 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDeSf5kvQNLDyAX-J8svKE-1dYdhHa4Fa4',
-    appId: '1:756388383425:web:96d9d479ce8ca8a44ea240',
-    messagingSenderId: '756388383425',
-    projectId: 'bankingapp-76a24',
-    authDomain: 'bankingapp-76a24.firebaseapp.com',
-    storageBucket: 'bankingapp-76a24.appspot.com',
-    measurementId: 'G-Y0J1Z8VDF9',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCXzyPF2ASqTzx0frQzh4ltTFktQP-RXL0',
     appId: '1:756388383425:android:27fa2559f90a86bb4ea240',
     messagingSenderId: '756388383425',
     projectId: 'bankingapp-76a24',
+    databaseURL: 'https://bankingapp-76a24-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'bankingapp-76a24.appspot.com',
   );
 
@@ -56,16 +63,9 @@ class DefaultFirebaseOptions {
     appId: '1:756388383425:ios:722ba949fe8b63ad4ea240',
     messagingSenderId: '756388383425',
     projectId: 'bankingapp-76a24',
+    databaseURL: 'https://bankingapp-76a24-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'bankingapp-76a24.appspot.com',
+    iosClientId: '756388383425-th6kpf829inhg70fevbop5bajivaoo2a.apps.googleusercontent.com',
     iosBundleId: 'com.example.complete',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDDlPWcJB-1GxRD2D6C_Qosdqrd_erp7xo',
-    appId: '1:756388383425:ios:bac5d3e08018db6d4ea240',
-    messagingSenderId: '756388383425',
-    projectId: 'bankingapp-76a24',
-    storageBucket: 'bankingapp-76a24.appspot.com',
-    iosBundleId: 'com.example.complete.RunnerTests',
   );
 }
