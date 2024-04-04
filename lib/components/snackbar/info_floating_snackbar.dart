@@ -6,6 +6,10 @@ class InfoFloatingSnackbar {
       SnackBar(
         content: Text(message),
         behavior: SnackBarBehavior.floating,
+        margin: EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
       ),
     );
   }

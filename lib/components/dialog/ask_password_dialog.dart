@@ -27,7 +27,7 @@ class _PasswordDialogState extends State<PasswordDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text('Submit'),
+          child: Text('Submit Password'),
           onPressed: () {
             widget.onPasswordEntered(_enteredPassword);
             Navigator.of(context).pop(); // Close the dialog
