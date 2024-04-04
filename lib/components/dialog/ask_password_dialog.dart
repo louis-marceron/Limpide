@@ -22,7 +22,7 @@ class _PasswordDialogState extends State<PasswordDialog> {
           _enteredPassword = value;
         },
         decoration: InputDecoration(
-          hintText: 'Password',
+          hintText: 'Current Password',
         ),
       ),
       actions: <Widget>[
