@@ -1,11 +1,11 @@
-import 'package:banking_app/home.dart';
+import 'package:banking_app/mock_page.dart';
 import 'package:banking_app/views/transactions_view.dart';
 import 'package:flutter/material.dart';
 
 const _routes = <Widget>[
-  const HomeScreen('Page 1'),
+  const MockPage('Page 1'),
   const TransactionsView(),
-  const HomeScreen('Page 3'),
+  const MockPage('Page 3'),
 ];
 
 class NavigationScreen extends StatefulWidget {

@@ -1,11 +1,11 @@
-import 'package:banking_app/home.dart';
+import 'package:banking_app/mock_page.dart';
 import 'package:banking_app/views/transactions_view.dart';
 import 'package:flutter/material.dart';
 
 const _routes = <Widget>[
-  const HomeScreen('Page 1'),
+  const MockPage('Page 1'),
   const TransactionsView(),
-  const HomeScreen('Page 3'),
+  const MockPage('Page 3'),
 ];
 
 class NavigationScreen extends StatefulWidget {
@@ -25,40 +25,6 @@ class NavigationScreen extends StatefulWidget {
 class _NavigationScreenState extends State<NavigationScreen> {
   late int _currentPageIndex;
   final List<int> _navigationHistory = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _currentPageIndex = widget._initialIndex;
-    _navigationHistory.add(widget._initialIndex);
-  }
-
-  void _selectPage(int index) {
-    setState(() {
-      _currentPageIndex = index;
-      // Add to history only if it's not the same as the current page
-      if (_navigationHistory.isEmpty || _navigationHistory.last != index) {
-        _navigationHistory.add(index);
-      }
-    });
-  }
-
-  bool _handlePop(bool didPop) {
-    // If the pop action failed, should never happen since canPop is
-    // set to true
-    if (!didPop) {
-      return false;
-    }
-
-    if (_navigationHistory.length > 1) {
-      setState(() {
-        _navigationHistory.removeLast(); // Remove current page
-        _currentPageIndex = _navigationHistory.last; // Set to previous page
-      });
-      return false; // Prevent default pop behavior
-    }
-    return true; // Allow pop if there's no history to revert to
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,5 +51,38 @@ class _NavigationScreenState extends State<NavigationScreen> {
       ),
     );
   }
-}
 
+  @override
+  void initState() {
+    super.initState();
+    _currentPageIndex = widget._initialIndex;
+    _navigationHistory.add(widget._initialIndex);
+  }
+
+  bool _handlePop(bool didPop) {
+    // If the pop action failed, should never happen since canPop is
+    // set to true
+    if (!didPop) {
+      return false;
+    }
+
+    if (_navigationHistory.length > 1) {
+      setState(() {
+        _navigationHistory.removeLast(); // Remove current page
+        _currentPageIndex = _navigationHistory.last; // Set to previous page
+      });
+      return false; // Prevent default pop behavior
+    }
+    return true; // Allow pop if there's no history to revert to
+  }
+
+  void _selectPage(int index) {
+    setState(() {
+      _currentPageIndex = index;
+      // Add to history only if it's not the same as the current page
+      if (_navigationHistory.isEmpty || _navigationHistory.last != index) {
+        _navigationHistory.add(index);
+      }
+    });
+  }
+}

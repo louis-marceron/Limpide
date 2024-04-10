@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'screens/profile_screen.dart'; // Import the profile screen Dart file
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen(this.welcomeText, {super.key});
+class MockPage extends StatelessWidget {
+  const MockPage(this.welcomeText, {super.key});
   final String welcomeText;
 
   @override
