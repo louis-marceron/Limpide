@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Future<bool?> showConfirmationDeletionDialog(BuildContext context, String message) {
+Future<bool?> showConfirmationDeletionDialog(BuildContext context, String message, String toBeDeleted) {
   return showDialog<bool>(
     context: context,
     builder: (BuildContext context) {
@@ -18,7 +18,7 @@ Future<bool?> showConfirmationDeletionDialog(BuildContext context, String messag
             onPressed: () {
               Navigator.of(context).pop(true); // Dismiss the dialog and return true
             },
-            child: Text('Delete', style: TextStyle(color: Colors.red),),
+            child: Text('Delete ' + toBeDeleted, style: TextStyle(color: Colors.red),),
           ),
         ],
       );

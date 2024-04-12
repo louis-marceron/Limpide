@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../components/dialog/confirmation_delete_dialog.dart';
-import '../components/dialog/ask_password_dialog.dart';
-import '../components/snackbar/info_floating_snackbar.dart';
-import '../components/dialog/confirmation_dialog.dart';
-import '../components/dialog/ask_email_dialog.dart';
+import 'package:banking_app/common_widgets/dialog/confirmation_delete_dialog.dart';
+import 'package:banking_app/common_widgets/snackbar/info_floating_snackbar.dart';
+import 'package:banking_app/common_widgets/dialog/confirmation_dialog.dart';
+import 'package:banking_app/common_widgets/dialog/ask_email_dialog.dart';
+import 'package:banking_app/common_widgets/dialog/ask_password_dialog.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen();
@@ -13,7 +13,6 @@ class ProfileScreen extends StatelessWidget {
    * Delete the account of the current user after checking the password
    */
   void _deleteAccount(BuildContext context) async {
-
     final enteredPassword = await showAskPasswordDialog(context);
 
     if (enteredPassword != null) {
@@ -21,30 +20,29 @@ class ProfileScreen extends StatelessWidget {
       final user = FirebaseAuth.instance.currentUser;
 
       if (user != null && user.email != null) {
-        AuthCredential credential =
-        EmailAuthProvider.credential(email: user.email!, password: enteredPassword);
+        AuthCredential credential = EmailAuthProvider.credential(
+            email: user.email!, password: enteredPassword);
 
         try {
           // Reauthenticate the user with the credential
           await user.reauthenticateWithCredential(credential);
 
-          final confirmed = await showConfirmationDeletionDialog(
-            context,
-            'Are you sure you want to delete your account ?',
-          );
+          final confirmed = await showConfirmationDeletionDialog(context,
+              'Are you sure you want to delete your account ?', 'account');
 
-          if(confirmed == true) {
+          if (confirmed == true) {
             try {
               await user.delete();
               Navigator.of(context).pop();
-            } catch(errorDelete){
+            } catch (errorDelete) {
               print('Failed to delete account: $errorDelete');
               InfoFloatingSnackbar.show(context, 'Failed to delete account');
             }
           }
         } catch (errorReauth) {
           print('Failed to reauthenticate: $errorReauth');
-          InfoFloatingSnackbar.show(context, 'Wrong password. Please try again.');
+          InfoFloatingSnackbar.show(
+              context, 'Wrong password. Please try again.');
         }
       }
     }
@@ -63,7 +61,6 @@ class ProfileScreen extends StatelessWidget {
       try {
         await FirebaseAuth.instance.signOut();
         InfoFloatingSnackbar.show(context, 'Logged out successfully');
-        Navigator.of(context).pop();
       } catch (e) {
         print('Failed to sign out: $e');
         // Handle sign out failure
@@ -86,24 +83,22 @@ class ProfileScreen extends StatelessWidget {
 
       print(user);
       if (user != null && user.email != null) {
-        AuthCredential credential =
-        EmailAuthProvider.credential(email: user.email!, password: currentPassword);
+        AuthCredential credential = EmailAuthProvider.credential(
+            email: user.email!, password: currentPassword);
 
         try {
           // Reauthenticate the user with the credential
           await user.reauthenticateWithCredential(credential);
 
           // If reauthentication is successful, send the password reset email
-          await FirebaseAuth.instance.sendPasswordResetEmail(email: user.email!);
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Password reset email sent to ${user.email}'),
-            ),
-          );
+          await FirebaseAuth.instance
+              .sendPasswordResetEmail(email: user.email!);
+          InfoFloatingSnackbar.show(
+              context, 'Password reset email sent to ${user.email}');
         } catch (e) {
           print('Failed to reauthenticate: $e');
-          InfoFloatingSnackbar.show(context, 'Wrong password. Please try again.');
+          InfoFloatingSnackbar.show(
+              context, 'Wrong password. Please try again.');
         }
       }
     } else {
@@ -152,7 +147,6 @@ class ProfileScreen extends StatelessWidget {
    * Change the email of the current user after checking the password and the new email
    */
   void changeEmail(BuildContext context) async {
-
     final enteredPassword = await showAskPasswordDialog(context);
 
     if (enteredPassword != null) {
@@ -160,8 +154,8 @@ class ProfileScreen extends StatelessWidget {
       final user = FirebaseAuth.instance.currentUser;
 
       if (user != null && user.email != null) {
-        AuthCredential credential =
-        EmailAuthProvider.credential(email: user.email!, password: enteredPassword);
+        AuthCredential credential = EmailAuthProvider.credential(
+            email: user.email!, password: enteredPassword);
 
         try {
           // Reauthenticate the user with the credential
@@ -172,14 +166,16 @@ class ProfileScreen extends StatelessWidget {
           if (enteredEmail != null) {
             try {
               await user.verifyBeforeUpdateEmail(enteredEmail);
-              InfoFloatingSnackbar.show(context, 'An email was sent to ${enteredEmail} to verify the new email. Please check your inbox.');
+              InfoFloatingSnackbar.show(context,
+                  'An email was sent to ${enteredEmail} to verify the new email. Please check your inbox.');
             } catch (e) {
               InfoFloatingSnackbar.show(context, 'Failed to verify new email');
             }
           }
         } catch (e) {
           print('Failed to reauthenticate: $e');
-          InfoFloatingSnackbar.show(context, 'Wrong password. Please try again.');
+          InfoFloatingSnackbar.show(
+              context, 'Wrong password. Please try again.');
         }
       }
     }
@@ -188,6 +184,9 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
+
+    final primaryColor = Theme.of(context).colorScheme.primary;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('User Screen'),
@@ -208,49 +207,65 @@ class ProfileScreen extends StatelessWidget {
             padding: EdgeInsets.all(20.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(25),
-              color: Colors.grey[100],
+              color: Theme.of(context).colorScheme.secondaryContainer,
             ),
             child: Column(
               children: [
-                Icon(Icons.account_circle_rounded, size: 100),
+                Icon(Icons.account_circle_rounded,
+                    size: 100,
+                    color: Theme.of(context).colorScheme.onSecondaryContainer),
                 SizedBox(height: 10),
                 if (user != null) ...[
                   Text(
-                    'Email: ${user.email}',
-                    style: TextStyle(fontSize: 18),
+                    '${user.email}',
+                    style: TextStyle(
+                        fontSize: 22,
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer),
                   ),
                 ],
               ],
             ),
           ),
           Expanded(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      // Show the password dialog to change email
-                      changeEmail(context);
-                    },
-                    child: const Text("Change Email"),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                InkWell(
+                  onTap: () {
+                    // Show the password dialog to change email
+                    changeEmail(context);
+                  },
+                  child: ListTile(
+                    tileColor: Theme.of(context).colorScheme.surface,
+                    title: Text("Change Email"),
+                    leading: Icon(Icons.email, color: primaryColor),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      // Show the password dialog to reset password
-                      resetPassword(context);
-                    },
-                    child: const Text('Reset Password'),
+                ),
+                Divider(),
+                InkWell(
+                  onTap: () {
+                    // Show the password dialog to reset password
+                    resetPassword(context);
+                  },
+                  child: ListTile(
+                    tileColor: Theme.of(context).colorScheme.surface,
+                    title: Text('Change Password'),
+                    leading: Icon(Icons.lock_reset, color: primaryColor),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      _deleteAccount(context);
-                    },
-                    child: const Text('Delete Account', style: TextStyle(color: Colors.red)),
+                ),
+                Divider(),
+                InkWell(
+                  onTap: () {
+                    _deleteAccount(context);
+                  },
+                  child: ListTile(
+                    tileColor: Theme.of(context).colorScheme.surface,
+                    title: Text('Delete Account'),
+                    leading: Icon(Icons.delete, color: primaryColor),
                   ),
-                  // Add more widgets specific to the user screen
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ],

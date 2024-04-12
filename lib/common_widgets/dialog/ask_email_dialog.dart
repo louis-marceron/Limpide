@@ -17,6 +17,7 @@ class _EmailDialogState extends State<EmailDialog> {
     return AlertDialog(
       title: Text('Enter your new email'),
       content: TextField(
+        keyboardType: TextInputType.emailAddress,
         onChanged: (value) {
           _enteredEmail = value;
         },
@@ -26,7 +27,7 @@ class _EmailDialogState extends State<EmailDialog> {
       ),
       actions: <Widget>[
         TextButton(
-          child: Text('Submit'),
+          child: Text('Change email'),
           onPressed: () {
             widget.onEmailEntered(_enteredEmail);
             Navigator.of(context).pop(); // Close the dialog

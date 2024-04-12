@@ -1,10 +1,13 @@
 import 'package:banking_app/features/transaction/transaction_view_model.dart';
 import 'package:banking_app/routing/router.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({super.key, required this.router});
+  final GoRouter router;
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -15,7 +18,7 @@ class MyApp extends StatelessWidget {
         darkTheme: darkTheme,
         themeMode: ThemeMode.system,
         title: 'Limpide',
-        routerConfig: goRouter,
+        routerConfig: router,
       ),
     );
   }

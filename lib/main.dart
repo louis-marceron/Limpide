@@ -1,20 +1,29 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:banking_app/routing/router.dart';
 
 import 'app.dart';
-import 'firebase_options.dart';
+import './config/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   // Register error handlers. For more info, see:
   // https://docs.flutter.dev/testing/errors
   registerErrorHandlers();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MyApp());
+  // Listen for Auth changes and refresh the router
+  FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    goRouter.refresh();
+  });
+
+  runApp(MyApp(router: goRouter));
 }
 
 void registerErrorHandlers() {
