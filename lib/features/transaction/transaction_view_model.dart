@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../models/transaction.dart';
-import '../services/transaction_service.dart';
+import './transaction_model.dart';
+import './transaction_service.dart';
 
-class TransactionController with ChangeNotifier {
+class TransactionViewModel with ChangeNotifier {
   List<Transaction> _transactions = [];
   TransactionService _transactionService = TransactionService();
 

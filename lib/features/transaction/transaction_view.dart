@@ -1,14 +1,15 @@
-import 'package:banking_app/models/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../controllers/transaction_controller.dart';
+
+import './transaction_model.dart';
+import './transaction_view_model.dart';
 
 class TransactionsView extends StatelessWidget {
   const TransactionsView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final transactionController = Provider.of<TransactionController>(context);
+    final transactionController = Provider.of<TransactionViewModel>(context);
 
     return Scaffold(
       appBar: AppBar(

@@ -1,5 +1,5 @@
-import 'package:banking_app/controllers/transaction_controller.dart';
-import 'package:banking_app/router.dart';
+import 'package:banking_app/features/transaction/transaction_view_model.dart';
+import 'package:banking_app/routing/router.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +8,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => TransactionController(),
+      create: (context) => TransactionViewModel(),
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
         theme: lightTheme,

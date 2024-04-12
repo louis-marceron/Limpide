@@ -23,28 +23,18 @@ class ApplicationShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (bool hasPopped) {
-        // It is never invoked :(
-        if (navigationShell.currentIndex > 0) {
-          // Navigate to the previous tab
-          _goBranch(navigationShell.currentIndex - 1);
-        }
-      },
-      child: Scaffold(
-        body: navigationShell,
-        bottomNavigationBar: NavigationBar(
-          destinations: <NavigationDestination>[
-            NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
-            NavigationDestination(
-                icon: Icon(Icons.payments), label: 'Transactions'),
-            NavigationDestination(
-                icon: Icon(Icons.bar_chart), label: 'Statistics'),
-          ],
-          onDestinationSelected: _goBranch,
-          selectedIndex: navigationShell.currentIndex,
-        ),
+    return Scaffold(
+      body: navigationShell,
+      bottomNavigationBar: NavigationBar(
+        destinations: <NavigationDestination>[
+          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
+          NavigationDestination(
+              icon: Icon(Icons.payments), label: 'Transactions'),
+          NavigationDestination(
+              icon: Icon(Icons.bar_chart), label: 'Statistics'),
+        ],
+        onDestinationSelected: _goBranch,
+        selectedIndex: navigationShell.currentIndex,
       ),
     );
   }
