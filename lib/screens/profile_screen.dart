@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../auth_gate.dart';
 import '../components/dialog/confirmation_delete_dialog.dart';
 import '../components/dialog/ask_password_dialog.dart';
 import '../components/snackbar/info_floating_snackbar.dart';
@@ -65,7 +66,13 @@ class ProfileScreen extends StatelessWidget {
       try {
         await FirebaseAuth.instance.signOut();
         InfoFloatingSnackbar.show(context, 'Logged out successfully');
-        Navigator.of(context).pop();
+
+        // Navigate to the AuthGate widget after signing out
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => AuthGate()),
+              (route) => false, // Prevents user from going back to the previous screen
+        );
       } catch (e) {
         print('Failed to sign out: $e');
         // Handle sign out failure
@@ -76,6 +83,7 @@ class ProfileScreen extends StatelessWidget {
       InfoFloatingSnackbar.show(context, 'Logout canceled');
     }
   }
+
 
   /**
    * Reset the password of the current user after checking the password
