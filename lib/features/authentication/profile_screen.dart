@@ -1,11 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../auth_gate.dart';
-import '../components/dialog/confirmation_delete_dialog.dart';
-import '../components/dialog/ask_password_dialog.dart';
-import '../components/snackbar/info_floating_snackbar.dart';
-import '../components/dialog/confirmation_dialog.dart';
-import '../components/dialog/ask_email_dialog.dart';
+import 'package:banking_app/common_widgets/dialog/confirmation_delete_dialog.dart';
+import 'package:banking_app/common_widgets/snackbar/info_floating_snackbar.dart';
+import 'package:banking_app/common_widgets/dialog/confirmation_dialog.dart';
+import 'package:banking_app/common_widgets/dialog/ask_email_dialog.dart';
+import 'package:banking_app/common_widgets/dialog/ask_password_dialog.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen();
@@ -21,19 +20,15 @@ class ProfileScreen extends StatelessWidget {
       final user = FirebaseAuth.instance.currentUser;
 
       if (user != null && user.email != null) {
-        AuthCredential credential =
-        EmailAuthProvider.credential(
+        AuthCredential credential = EmailAuthProvider.credential(
             email: user.email!, password: enteredPassword);
 
         try {
           // Reauthenticate the user with the credential
           await user.reauthenticateWithCredential(credential);
 
-          final confirmed = await showConfirmationDeletionDialog(
-            context,
-            'Are you sure you want to delete your account ?',
-            'account'
-          );
+          final confirmed = await showConfirmationDeletionDialog(context,
+              'Are you sure you want to delete your account ?', 'account');
 
           if (confirmed == true) {
             try {
@@ -66,13 +61,6 @@ class ProfileScreen extends StatelessWidget {
       try {
         await FirebaseAuth.instance.signOut();
         InfoFloatingSnackbar.show(context, 'Logged out successfully');
-
-        // Navigate to the AuthGate widget after signing out
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => AuthGate()),
-              (route) => false, // Prevents user from going back to the previous screen
-        );
       } catch (e) {
         print('Failed to sign out: $e');
         // Handle sign out failure
@@ -83,7 +71,6 @@ class ProfileScreen extends StatelessWidget {
       InfoFloatingSnackbar.show(context, 'Logout canceled');
     }
   }
-
 
   /**
    * Reset the password of the current user after checking the password
@@ -96,8 +83,7 @@ class ProfileScreen extends StatelessWidget {
 
       print(user);
       if (user != null && user.email != null) {
-        AuthCredential credential =
-        EmailAuthProvider.credential(
+        AuthCredential credential = EmailAuthProvider.credential(
             email: user.email!, password: currentPassword);
 
         try {
@@ -105,11 +91,10 @@ class ProfileScreen extends StatelessWidget {
           await user.reauthenticateWithCredential(credential);
 
           // If reauthentication is successful, send the password reset email
-          await FirebaseAuth.instance.sendPasswordResetEmail(
-              email: user.email!);
-          InfoFloatingSnackbar.show(context,
-              'Password reset email sent to ${user.email}'
-          );
+          await FirebaseAuth.instance
+              .sendPasswordResetEmail(email: user.email!);
+          InfoFloatingSnackbar.show(
+              context, 'Password reset email sent to ${user.email}');
         } catch (e) {
           print('Failed to reauthenticate: $e');
           InfoFloatingSnackbar.show(
@@ -169,8 +154,7 @@ class ProfileScreen extends StatelessWidget {
       final user = FirebaseAuth.instance.currentUser;
 
       if (user != null && user.email != null) {
-        AuthCredential credential =
-        EmailAuthProvider.credential(
+        AuthCredential credential = EmailAuthProvider.credential(
             email: user.email!, password: enteredPassword);
 
         try {
@@ -197,14 +181,11 @@ class ProfileScreen extends StatelessWidget {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
 
     final primaryColor = Theme.of(context).colorScheme.primary;
-
-    final secondaryColor = Theme.of(context).colorScheme.secondary;
 
     return Scaffold(
       appBar: AppBar(
@@ -230,18 +211,17 @@ class ProfileScreen extends StatelessWidget {
             ),
             child: Column(
               children: [
-                Icon(Icons.account_circle_rounded, size: 100, color: Theme
-                    .of(context)
-                    .colorScheme
-                    .onSecondaryContainer),
+                Icon(Icons.account_circle_rounded,
+                    size: 100,
+                    color: Theme.of(context).colorScheme.onSecondaryContainer),
                 SizedBox(height: 10),
                 if (user != null) ...[
                   Text(
                     '${user.email}',
-                    style: TextStyle(fontSize: 22, color: Theme
-                        .of(context)
-                        .colorScheme
-                        .onSecondaryContainer),
+                    style: TextStyle(
+                        fontSize: 22,
+                        color:
+                            Theme.of(context).colorScheme.onSecondaryContainer),
                   ),
                 ],
               ],
@@ -257,10 +237,7 @@ class ProfileScreen extends StatelessWidget {
                     changeEmail(context);
                   },
                   child: ListTile(
-                    tileColor: Theme
-                        .of(context)
-                        .colorScheme
-                        .surface,
+                    tileColor: Theme.of(context).colorScheme.surface,
                     title: Text("Change Email"),
                     leading: Icon(Icons.email, color: primaryColor),
                   ),
@@ -272,10 +249,7 @@ class ProfileScreen extends StatelessWidget {
                     resetPassword(context);
                   },
                   child: ListTile(
-                    tileColor: Theme
-                        .of(context)
-                        .colorScheme
-                        .surface,
+                    tileColor: Theme.of(context).colorScheme.surface,
                     title: Text('Change Password'),
                     leading: Icon(Icons.lock_reset, color: primaryColor),
                   ),
@@ -286,12 +260,8 @@ class ProfileScreen extends StatelessWidget {
                     _deleteAccount(context);
                   },
                   child: ListTile(
-                    tileColor: Theme
-                        .of(context)
-                        .colorScheme
-                        .surface,
-                    title: Text(
-                        'Delete Account'),
+                    tileColor: Theme.of(context).colorScheme.surface,
+                    title: Text('Delete Account'),
                     leading: Icon(Icons.delete, color: primaryColor),
                   ),
                 ),

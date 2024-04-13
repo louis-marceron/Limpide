@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "756388383425",
+    "firebase_url": "https://bankingapp-76a24-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "bankingapp-76a24",
     "storage_bucket": "bankingapp-76a24.appspot.com"
   },
@@ -12,7 +13,12 @@
           "package_name": "com.example.complete"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "756388383425-rmljggeptimgtt3rrk7n33r51ml2m0nr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCXzyPF2ASqTzx0frQzh4ltTFktQP-RXL0"
@@ -20,7 +26,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "756388383425-rmljggeptimgtt3rrk7n33r51ml2m0nr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "756388383425-n27vqrkct80f5scefol1gim2h5hpca38.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.complete.RunnerTests"
+              }
+            }
+          ]
         }
       }
     }

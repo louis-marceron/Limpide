@@ -1,14 +1,13 @@
+import 'package:banking_app/common_widgets/snackbar/info_floating_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../components/snackbar/info_floating_snackbar.dart';
-import '../home.dart';
 
-class RegisterScreen extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
@@ -23,7 +22,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: Text('Login'),
       ),
       body: Center(
         child: Column(
@@ -54,28 +53,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 onPressed: () async {
                   String email = _emailController.text;
                   String password = _passwordController.text;
-                  // Use email and password for registration logic
+                  // Use email and password for login logic
+                  print('Email: $email, Password: $password');
                   try {
-                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                      email: email,
-                      password: password,
-                    );
-                    // After successful registration, navigate to home screen
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
-                    );
+                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                        email: email, password: password);
                   } on FirebaseAuthException catch (e) {
-                    if (e.code == 'weak-password') {
-                      InfoFloatingSnackbar.show(context, 'The password provided is too weak.');
-                    } else if (e.code == 'email-already-in-use') {
-                      InfoFloatingSnackbar.show(context, 'The account already exists for that email.');
+                    if (e.code == 'user-not-found') {
+                      InfoFloatingSnackbar.show(
+                          context, 'No user found for that email.');
+                    } else if (e.code == 'wrong-password') {
+                      InfoFloatingSnackbar.show(
+                          context, 'Wrong password. Please try again.');
+                    } else {
+                      InfoFloatingSnackbar.show(
+                          context, 'Failed to login. Please try again.');
                     }
-                  } catch (e) {
-                    InfoFloatingSnackbar.show(context, 'An error occurred. Please try again.');
                   }
                 },
-                child: Text('Register'),
+                child: Text('Login'),
               ),
             ),
           ],

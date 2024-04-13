@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'screens/profile_screen.dart'; // Import the profile screen Dart file
+import 'package:go_router/go_router.dart';
+import '../constants/routes.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen();
+class MockPage extends StatelessWidget {
+  const MockPage({this.welcomeText = 'Mock page', super.key});
+  final String welcomeText;
 
   @override
   Widget build(BuildContext context) {
@@ -11,14 +13,7 @@ class HomeScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.person),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProfileScreen(), // Navigate to ProfileScreen
-                ),
-              );
-            },
+            onPressed: () => context.push(Routes.profile),
           )
         ],
         automaticallyImplyLeading: false,
@@ -26,9 +21,8 @@ class HomeScreen extends StatelessWidget {
       body: Center(
         child: Column(
           children: [
-            Image.asset('assets/dash.png'),
             Text(
-              'Welcome!',
+              welcomeText,
               style: Theme.of(context).textTheme.displaySmall,
             ),
           ],

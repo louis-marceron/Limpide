@@ -1,14 +1,15 @@
-import 'package:banking_app/components/snackbar/info_floating_snackbar.dart';
-import 'package:banking_app/home.dart';
+import 'package:banking_app/constants/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:banking_app/common_widgets/snackbar/info_floating_snackbar.dart';
+import 'package:go_router/go_router.dart';
 
-class LoginScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _RegisterScreenState createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
@@ -23,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text('Register'),
       ),
       body: Center(
         child: Column(
@@ -54,36 +55,28 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () async {
                   String email = _emailController.text;
                   String password = _passwordController.text;
-                  // Use email and password for login logic
-                  print('Email: $email, Password: $password');
+                  // Use email and password for registration logic
                   try {
-                    final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                        email: email,
-                        password: password
+                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                      email: email,
+                      password: password,
                     );
+                    // After successful registration, navigate to home screen
+                    context.go(Routes.home);
                   } on FirebaseAuthException catch (e) {
-                    if (e.code == 'user-not-found') {
-                      InfoFloatingSnackbar.show(context, 'No user found for that email.');
-                    } else if (e.code == 'wrong-password') {
-                      InfoFloatingSnackbar.show(context, 'Wrong password. Please try again.');
-                    } else {
-                      InfoFloatingSnackbar.show(context, 'Failed to login. Please try again.');
+                    if (e.code == 'weak-password') {
+                      InfoFloatingSnackbar.show(
+                          context, 'The password provided is too weak.');
+                    } else if (e.code == 'email-already-in-use') {
+                      InfoFloatingSnackbar.show(context,
+                          'The account already exists for that email.');
                     }
+                  } catch (e) {
+                    InfoFloatingSnackbar.show(
+                        context, 'An error occurred. Please try again.');
                   }
-                  //check if loggin was success
-                  if (FirebaseAuth.instance.currentUser != null) {
-                    print('User is logged in');
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
-                    );
-                  } else {
-                    print('User is not logged in');
-                  }
-                  // After successful login, navigate to home screen
-
                 },
-                child: Text('Login'),
+                child: Text('Register'),
               ),
             ),
           ],
