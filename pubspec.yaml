@@ -17,6 +17,7 @@ dependencies:
   go_router: ^13.2.2
   google_sign_in: ^6.2.1
   provider: ^6.1.2
+  uuid: ^4.4.0
 
 dev_dependencies:
   flutter_test:

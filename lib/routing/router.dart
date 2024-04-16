@@ -3,12 +3,14 @@ import 'package:banking_app/features/authentication/login_screen.dart';
 import 'package:banking_app/features/authentication/profile_screen.dart';
 import 'package:banking_app/features/authentication/register_screen.dart';
 import 'package:banking_app/features/transaction/transaction_view.dart';
+import 'package:banking_app/features/transaction/add_transaction_view.dart';
 import 'package:banking_app/common_widgets/mock_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../constants/routes.dart';
+import '../features/transaction/edit_transaction_view.dart';
 import './application_shell.dart';
 
 // I don't really understand the purpose of the keys
@@ -51,6 +53,23 @@ final goRouter = GoRouter(
               pageBuilder: (context, state) => NoTransitionPage(
                 child: TransactionsView(),
               ),
+              routes:
+              [
+                GoRoute(
+                  path: 'add',
+                  pageBuilder: (context, state) => NoTransitionPage(
+                    child: AddTransactionView(),
+                  ),
+                ),
+                GoRoute(
+                    path: 'edit/:transactionId',
+                    name: 'edit',
+                    builder: (context, state) =>
+                      EditTransactionView(
+                        transactionId: state.pathParameters['transactionId']
+                      ),
+                    ),
+              ],
             ),
           ],
         ),
