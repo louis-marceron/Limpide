@@ -5,7 +5,6 @@ class TransactionService {
   final fs.FirebaseFirestore _firestore = fs.FirebaseFirestore.instance;
 
   Future<List<Transaction>> fetchTransactions(String userId) async {
-    print('Fetching transactions for user with ID 1: $userId');
 
     try {
       print('Fetching transactions for user with ID: $userId');
@@ -25,7 +24,6 @@ class TransactionService {
   }
 
   Future<Transaction?> getTransactionById(String userId, String transactionId) async {
-    print('Fetching transaction with ID: $transactionId');
     try {
       var doc = await _firestore
           .collection('users')

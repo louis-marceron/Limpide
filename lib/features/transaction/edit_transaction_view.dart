@@ -4,21 +4,35 @@ import 'package:flutter/material.dart';
 import 'package:banking_app/features/transaction/transaction_view_model.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../common_widgets/snackbar/info_floating_snackbar.dart';
+import './category_icons.dart';
 
-class EditTransactionView extends StatelessWidget {
 
+class EditTransactionView extends StatefulWidget {
   final String? transactionId;
 
-  EditTransactionView({super.key, this.transactionId});
+  EditTransactionView({Key? key, this.transactionId}) : super(key: key);
+
+  @override
+  _EditTransactionViewState createState() => _EditTransactionViewState();
+}
+
+
+class _EditTransactionViewState extends State<EditTransactionView> {
+  late TransactionViewModel _transactionController;
+  late Transaction? _transaction;
+  late String _selectedCategory = ''; // declare here
+
+  @override
+  void initState() {
+    super.initState();
+    _transactionController = Provider.of<TransactionViewModel>(context, listen: false);
+    _transactionController.fetchTransactionsForCurrentUser();
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    final transactionController = Provider.of<TransactionViewModel>(context);
-
     final userId = FirebaseAuth.instance.currentUser?.uid;
-
-    var transaction = null;
 
     return Scaffold(
       appBar: AppBar(
@@ -26,27 +40,23 @@ class EditTransactionView extends StatelessWidget {
       ),
       body: Center(
         child: FutureBuilder<Transaction?>(
-          //TODO get the userId with service
-          future: transactionController.getTransactionById(userId??"", transactionId??""),
+          future: _transactionController.getTransactionById(userId ?? "", widget.transactionId ?? ""),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator();
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else {
-              if(snapshot.data == null){
-                print(transactionId);
-                print(userId);
-                return Text('No Transaction found');
-              } else {
-                transaction = snapshot.data!;
-                // Populate the controllers with transaction data
-                transactionController.labelController.text = transaction.label;
-                transactionController.amountController.text = transaction.amount.toString();
-                transactionController.categoryController.text = transaction.category ?? '';
-                transactionController.typeController.text = transaction.type;
-                transactionController.bankNameController.text = transaction.bankName;
-                transactionController.dateController.text = transaction.date.toString();
+              _transaction = snapshot.data;
+
+              // Prefill text controllers with transaction data
+              if (_transaction != null) {
+                _transactionController.labelController.text = _transaction!.label;
+                _transactionController.amountController.text = _transaction!.amount.toString();
+                _transactionController.categoryController.text = _transaction!.category ?? '';
+                _transactionController.typeController.text = _transaction!.type;
+                _transactionController.bankNameController.text = _transaction!.bankName;
+                _transactionController.dateController.text = _transaction!.date.toString();
               }
 
               return Padding(
@@ -55,34 +65,42 @@ class EditTransactionView extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     TextField(
-                      controller: transactionController.labelController,
+                      controller: _transactionController.labelController,
                       decoration: InputDecoration(
                         labelText: 'Label',
                       ),
                     ),
                     TextField(
-                      controller: transactionController.amountController,
+                      controller: _transactionController.amountController,
                       decoration: InputDecoration(
                         labelText: 'Amount',
-
                       ),
                     ),
                     TextField(
-                      controller: transactionController.categoryController,
-                      decoration: InputDecoration(
-                        labelText: 'Category',
-                      ),
-                    ),
-                    TextField(
-                      controller: transactionController.typeController,
+                      controller: _transactionController.typeController,
                       decoration: InputDecoration(
                         labelText: 'Type',
                       ),
                     ),
                     TextField(
-                      controller: transactionController.bankNameController,
+                      controller: _transactionController.bankNameController,
                       decoration: InputDecoration(
                         labelText: 'Bank Name',
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        context.pushNamed('categories').then((selectedCategory) {
+                          if (selectedCategory != null) {
+                            setState(() {
+                              print('Selected category: $selectedCategory');
+                              _selectedCategory = selectedCategory as String;
+                            });
+                          }
+                        });
+                      },
+                      child: Icon(
+                        categoryIcons[_selectedCategory] ?? Icons.error,
                       ),
                     ),
                     ElevatedButton(
@@ -90,8 +108,8 @@ class EditTransactionView extends StatelessWidget {
                         // Show date picker to select a new date
                         final selectedDate = await showDatePicker(
                           context: context,
-                          initialDate: transactionController.dateController.text.isNotEmpty
-                              ? DateTime.tryParse(transactionController.dateController.text) ?? DateTime.now()
+                          initialDate: _transactionController.dateController.text.isNotEmpty
+                              ? DateTime.tryParse(_transactionController.dateController.text) ?? DateTime.now()
                               : DateTime.now(),
                           firstDate: DateTime(DateTime.now().year - 1),
                           lastDate: DateTime(DateTime.now().year + 2),
@@ -100,11 +118,11 @@ class EditTransactionView extends StatelessWidget {
                         // Update selected date in ViewModel
                         if (selectedDate != null) {
                           print('Selected date: $selectedDate');
-                          transactionController.updateSelectedDate(selectedDate);
+                          _transactionController.updateSelectedDate(selectedDate);
                         } else {
                           print('No date selected');
-                          print(transactionController.dateController.text.isNotEmpty
-                              ? DateTime.tryParse(transactionController.dateController.text) ?? DateTime.now()
+                          print(_transactionController.dateController.text.isNotEmpty
+                              ? DateTime.tryParse(_transactionController.dateController.text) ?? DateTime.now()
                               : DateTime.now());
                         }
                       },
@@ -112,19 +130,28 @@ class EditTransactionView extends StatelessWidget {
                     ),
                     ElevatedButton(
                       onPressed: () {
+                        print('Dans le edit transaction view');
+                        print(_transactionController.categoryController.text);
+
+                        _transactionController.categoryController.text = _selectedCategory;
+
+                        print(_transactionController.categoryController.text);
+
                         // Create the updated transaction object using ViewModel method
-                        final updatedTransaction = transactionController.createUpdatedTransaction(transaction, transactionController);
+                        final updatedTransaction = _transactionController.createUpdatedTransaction(_transaction!, _transactionController);
 
                         // Call the updateTransaction method from the ViewModel
-                        transactionController.updateTransaction(userId ?? "", updatedTransaction);
+                        _transactionController.updateTransaction(userId ?? "", updatedTransaction);
+
+                        _transactionController.fetchTransactionsForCurrentUser();
+
+                        InfoFloatingSnackbar.show(context, 'Transaction modified');
 
                         // Navigate back to the previous screen
                         context.pop();
                       },
                       child: Text('Update Transaction'),
                     ),
-
-
                   ],
                 ),
               );

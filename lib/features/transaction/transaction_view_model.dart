@@ -22,7 +22,6 @@ class TransactionViewModel with ChangeNotifier {
       .toList();
 
   Future<void> fetchTransactions(String userId) async {
-    print('Fetching transactions for user with ID: $userId');
     try {
       _transactions = await _transactionService.fetchTransactions(userId);
       notifyListeners();
@@ -99,4 +98,14 @@ class TransactionViewModel with ChangeNotifier {
   Future<Transaction?> getTransactionById(String userId, String transactionId) async {
     return await _transactionService.getTransactionById(userId, transactionId);
   }
+
+  void resetTransaction() {
+    labelController.clear();
+    amountController.clear();
+    typeController.clear();
+    bankNameController.clear();
+    categoryController.clear();
+    dateController.clear();
+  }
+
 }
