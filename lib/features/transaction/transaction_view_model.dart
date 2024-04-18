@@ -128,7 +128,10 @@ class TransactionViewModel with ChangeNotifier {
   Future<double> fetchTotalBalance(String userId) async {
     await fetchTransactions(userId);
     final double total = _transactions.fold(
-        0.0, (total, transaction) => total + transaction.amount);
+        0.0,
+        (total, transaction) => transaction.type == 'Expense'
+            ? total - transaction.amount
+            : total + transaction.amount);
     return total;
   }
 
