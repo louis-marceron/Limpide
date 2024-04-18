@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import '../../constants/routes.dart';
 import './transaction_view_model.dart';
 import './category_icons.dart';
 
@@ -20,22 +21,28 @@ class _TransactionsViewState extends State<TransactionsView> {
   void initState() {
     super.initState();
     // Initialize the transaction controller and fetch transactions
-    transactionController = Provider.of<TransactionViewModel>(context, listen: false);
+    transactionController =
+        Provider.of<TransactionViewModel>(context, listen: false);
     transactionController.fetchTransactionsForCurrentUser();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Transactions'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () => context.push(Routes.profile),
+          )
+        ],
       ),
       body: Consumer<TransactionViewModel>(
         builder: (context, transactionController, _) {
-
           // Group transactions by day
-          final transactionsByDay = _groupTransactionsByDay(transactionController.transactions);
+          final transactionsByDay =
+              _groupTransactionsByDay(transactionController.transactions);
 
           return ListView.builder(
             itemCount: transactionsByDay.length,
@@ -60,7 +67,8 @@ class _TransactionsViewState extends State<TransactionsView> {
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: dayTransactions.length,
-                    separatorBuilder: (context, index) => Divider(height: 0), // Add Divider between transactions
+                    separatorBuilder: (context, index) =>
+                        Divider(height: 0), // Add Divider between transactions
                     itemBuilder: (context, index) {
                       final transaction = dayTransactions[index];
                       return _buildTransactionTile(context, transaction);
@@ -86,10 +94,13 @@ class _TransactionsViewState extends State<TransactionsView> {
 
   Widget _buildTransactionTile(BuildContext context, Transaction transaction) {
     return Container(
-      color: Theme.of(context).colorScheme.secondaryContainer , // Background color for transaction
+      color: Theme.of(context)
+          .colorScheme
+          .secondaryContainer, // Background color for transaction
       child: ListTile(
         style: ListTileStyle.list,
-        leading: Icon(categoryIcons[transaction.category] ?? Icons.attach_money),
+        leading:
+            Icon(categoryIcons[transaction.category] ?? Icons.attach_money),
         iconColor: Theme.of(context).colorScheme.primary,
         title: Text(transaction.label),
         subtitle: Text(
@@ -104,16 +115,21 @@ class _TransactionsViewState extends State<TransactionsView> {
           });
         },
         //TODO add currency
-        trailing: Text(transaction.amount.toString(), style: TextStyle(fontSize: 16, color: Theme.of(context).colorScheme.onSecondaryContainer)),
+        trailing: Text(transaction.amount.toString(),
+            style: TextStyle(
+                fontSize: 16,
+                color: Theme.of(context).colorScheme.onSecondaryContainer)),
       ),
     );
   }
 
-  List<List<Transaction>> _groupTransactionsByDay(List<Transaction> transactions) {
+  List<List<Transaction>> _groupTransactionsByDay(
+      List<Transaction> transactions) {
     // Group transactions by day
     final Map<DateTime, List<Transaction>> groupedTransactions = {};
     for (final transaction in transactions) {
-      final date = DateTime(transaction.date.year, transaction.date.month, transaction.date.day);
+      final date = DateTime(
+          transaction.date.year, transaction.date.month, transaction.date.day);
       if (!groupedTransactions.containsKey(date)) {
         groupedTransactions[date] = [];
       }
@@ -125,7 +141,15 @@ class _TransactionsViewState extends State<TransactionsView> {
   }
 
   String _getFormattedDate(DateTime date) {
-    final weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    final weekdays = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday'
+    ];
     final months = [
       'January',
       'February',

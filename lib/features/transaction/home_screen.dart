@@ -1,7 +1,9 @@
+import 'package:banking_app/constants/routes.dart';
 import 'package:banking_app/features/transaction/total_balance_widget.dart';
 import 'package:banking_app/features/transaction/transaction_view_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import 'balance_summary_widget.dart';
@@ -16,6 +18,12 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Home'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.person),
+            onPressed: () => context.push(Routes.profile),
+          )
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
