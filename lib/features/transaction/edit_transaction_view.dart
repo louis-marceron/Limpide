@@ -26,17 +26,17 @@ class _EditTransactionViewState extends State<EditTransactionView> {
   @override
   void initState() {
     super.initState();
-    _transactionController = Provider.of<TransactionViewModel>(context, listen: false);
-    _transactionController.fetchTransactionsForCurrentUser();
-  }
+  _transactionController = Provider.of<TransactionViewModel>(context, listen: false);
+  _transactionController.fetchTransactionsForCurrentUser();
+}
 
-  @override
-  Widget build(BuildContext context) {
-    final userId = FirebaseAuth.instance.currentUser?.uid;
+@override
+Widget build(BuildContext context) {
+  final userId = FirebaseAuth.instance.currentUser?.uid;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Edit Transaction'),
+  return Scaffold(
+    appBar: AppBar(
+      title: Text('Edit Transaction'),
       ),
       body: Center(
         child: FutureBuilder<Transaction?>(

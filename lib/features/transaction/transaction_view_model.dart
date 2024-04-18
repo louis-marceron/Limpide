@@ -6,6 +6,9 @@ import './transaction_service.dart';
 
 class TransactionViewModel with ChangeNotifier {
   List<Transaction> _transactions = [];
+  // For caching the transactions so that we don't have to fetch them again
+  bool _hasFetchedTransactions = false;
+  // FIXME use regular fields
   TransactionService _transactionService = TransactionService();
   TextEditingController labelController = TextEditingController();
   TextEditingController amountController = TextEditingController();
@@ -18,13 +21,16 @@ class TransactionViewModel with ChangeNotifier {
 
   List<Transaction> get recentTransactions => _transactions
       .where((transaction) =>
-      transaction.date.isAfter(DateTime.now().subtract(Duration(days: 7))))
+          transaction.date.isAfter(DateTime.now().subtract(Duration(days: 7))))
       .toList();
 
   Future<void> fetchTransactions(String userId) async {
     try {
-      _transactions = await _transactionService.fetchTransactions(userId);
-      notifyListeners();
+      if (!_hasFetchedTransactions) {
+        _transactions = await _transactionService.fetchTransactions(userId);
+      _hasFetchedTransactions = true;
+        notifyListeners();
+      }
     } catch (e) {
       print('Error fetching transactions: $e');
       // Handle the error appropriately, such as showing an error message
@@ -33,7 +39,8 @@ class TransactionViewModel with ChangeNotifier {
 
   void fetchTransactionsForCurrentUser() async {
     try {
-      String userId = FirebaseAuth.instance.currentUser?.uid ?? ''; // handle null case
+      String userId =
+          FirebaseAuth.instance.currentUser?.uid ?? ''; // handle null case
       if (userId.isNotEmpty) {
         await fetchTransactions(userId);
       } else {
@@ -63,7 +70,8 @@ class TransactionViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  Transaction createUpdatedTransaction(Transaction oldTransaction, TransactionViewModel transactionController) {
+  Transaction createUpdatedTransaction(
+      Transaction oldTransaction, TransactionViewModel transactionController) {
     return Transaction(
       transactionId: oldTransaction.transactionId,
       type: transactionController.typeController.text,
@@ -75,10 +83,12 @@ class TransactionViewModel with ChangeNotifier {
     );
   }
 
-  Future<void> updateTransaction(String userId, Transaction oldTransaction) async {
+  Future<void> updateTransaction(
+      String userId, Transaction oldTransaction) async {
     final updatedTransaction = createUpdatedTransaction(oldTransaction, this);
     await _transactionService.updateTransaction(userId, updatedTransaction);
-    int index = _transactions.indexWhere((t) => t.transactionId == updatedTransaction.transactionId);
+    int index = _transactions
+        .indexWhere((t) => t.transactionId == updatedTransaction.transactionId);
     if (index != -1) {
       _transactions[index] = updatedTransaction;
       notifyListeners();
@@ -87,7 +97,8 @@ class TransactionViewModel with ChangeNotifier {
 
   Future<void> deleteTransaction(String userId, String transactionId) async {
     await _transactionService.deleteTransaction(userId, transactionId);
-    _transactions.removeWhere((transaction) => transaction.transactionId == transactionId);
+    _transactions.removeWhere(
+        (transaction) => transaction.transactionId == transactionId);
     notifyListeners();
   }
 
@@ -95,7 +106,8 @@ class TransactionViewModel with ChangeNotifier {
     dateController.text = selectedDate.toIso8601String();
   }
 
-  Future<Transaction?> getTransactionById(String userId, String transactionId) async {
+  Future<Transaction?> getTransactionById(
+      String userId, String transactionId) async {
     return await _transactionService.getTransactionById(userId, transactionId);
   }
 
@@ -108,4 +120,10 @@ class TransactionViewModel with ChangeNotifier {
     dateController.clear();
   }
 
+  Future<double> fetchTotalBalance(String userId) async {
+    await fetchTransactions(userId);
+    final double total = _transactions.fold(
+        0.0, (total, transaction) => total + transaction.amount);
+    return total;
+  }
 }

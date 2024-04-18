@@ -2,6 +2,7 @@ import 'package:banking_app/features/authentication/auth_selection_screen.dart';
 import 'package:banking_app/features/authentication/login_screen.dart';
 import 'package:banking_app/features/authentication/profile_screen.dart';
 import 'package:banking_app/features/authentication/register_screen.dart';
+import 'package:banking_app/features/transaction/home_screen.dart';
 import 'package:banking_app/features/transaction/transaction_focus_view.dart';
 import 'package:banking_app/features/transaction/transaction_view.dart';
 import 'package:banking_app/features/transaction/add_transaction_view.dart';
@@ -42,7 +43,7 @@ final goRouter = GoRouter(
             GoRoute(
               path: Routes.home,
               pageBuilder: (context, state) => NoTransitionPage(
-                child: MockPage(welcomeText: 'Home'),
+                child: HomeScreen(),
               ),
             ),
           ],
@@ -55,8 +56,7 @@ final goRouter = GoRouter(
               pageBuilder: (context, state) => NoTransitionPage(
                 child: TransactionsView(),
               ),
-              routes:
-              [
+              routes: [
                 GoRoute(
                   path: 'add',
                   pageBuilder: (context, state) => NoTransitionPage(
@@ -64,26 +64,21 @@ final goRouter = GoRouter(
                   ),
                 ),
                 GoRoute(
-                    path: 'edit/:transactionId',
-                    name: 'edit',
-                    builder: (context, state) =>
-                      EditTransactionView(
-                        transactionId: state.pathParameters['transactionId']
-                      ),
-                    ),
+                  path: 'edit/:transactionId',
+                  name: 'edit',
+                  builder: (context, state) => EditTransactionView(
+                      transactionId: state.pathParameters['transactionId']),
+                ),
                 GoRoute(
                   path: 'detail/:transactionId',
                   name: 'details',
-                  builder: (context, state) =>
-                      TransactionFocusView(
-                          transactionId: state.pathParameters['transactionId']
-                      ),
+                  builder: (context, state) => TransactionFocusView(
+                      transactionId: state.pathParameters['transactionId']),
                 ),
                 GoRoute(
-                    path: 'categories',
-                    name: 'categories',
-                    builder: (context, state) =>
-                        CategoryView(),
+                  path: 'categories',
+                  name: 'categories',
+                  builder: (context, state) => CategoryView(),
                 ),
               ],
             ),
