@@ -28,7 +28,7 @@ class TransactionViewModel with ChangeNotifier {
     try {
       if (!_hasFetchedTransactions) {
         _transactions = await _transactionService.fetchTransactions(userId);
-      _hasFetchedTransactions = true;
+        _hasFetchedTransactions = true;
         notifyListeners();
       }
     } catch (e) {
@@ -124,6 +124,63 @@ class TransactionViewModel with ChangeNotifier {
     await fetchTransactions(userId);
     final double total = _transactions.fold(
         0.0, (total, transaction) => total + transaction.amount);
+    return total;
+  }
+
+  Future<double> fetchExpensesSinceBeginning(String userId) async {
+    await fetchTransactions(userId);
+    final double total = _transactions
+        .where((transaction) => transaction.type == 'Expense')
+        .fold(0.0, (sum, transaction) => sum + transaction.amount);
+    return total;
+  }
+
+  Future<double> fetchIncomeSinceBeginning(String userId) async {
+    await fetchTransactions(userId);
+    final double total = _transactions
+        .where((transaction) => transaction.type == 'Income')
+        .fold(0.0, (sum, transaction) => sum + transaction.amount);
+    return total;
+  }
+
+  Future<double> fetchExpensesForMonth(
+      String userId, int month, int year) async {
+    await fetchTransactions(userId); // Ensure transactions are loaded
+    final double total = _transactions
+        .where((transaction) =>
+            transaction.type == 'Expense' &&
+            transaction.date.month == month &&
+            transaction.date.year == year)
+        .fold(0.0, (sum, transaction) => sum + transaction.amount);
+    return total;
+  }
+
+  Future<double> fetchIncomeForMonth(String userId, int month, int year) async {
+    await fetchTransactions(userId);
+    final double total = _transactions
+        .where((transaction) =>
+            transaction.type == 'Income' &&
+            transaction.date.month == month &&
+            transaction.date.year == year)
+        .fold(0.0, (sum, transaction) => sum + transaction.amount);
+    return total;
+  }
+
+  Future<double> fetchExpensesForYear(String userId, int year) async {
+    await fetchTransactions(userId); // Ensure transactions are loaded
+    final double total = _transactions
+        .where((transaction) =>
+            transaction.type == 'Expense' && transaction.date.year == year)
+        .fold(0.0, (sum, transaction) => sum + transaction.amount);
+    return total;
+  }
+
+  Future<double> fetchIncomeForYear(String userId, int year) async {
+    await fetchTransactions(userId);
+    final double total = _transactions
+        .where((transaction) =>
+            transaction.type == 'Income' && transaction.date.year == year)
+        .fold(0.0, (sum, transaction) => sum + transaction.amount);
     return total;
   }
 }
