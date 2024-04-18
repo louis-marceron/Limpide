@@ -6,21 +6,33 @@ import '../../common_widgets/snackbar/info_floating_snackbar.dart';
 import 'category_icons.dart';
 import 'package:banking_app/features/transaction/transaction_view_model.dart';
 
-class AddTransactionView extends StatelessWidget {
+class AddTransactionView extends StatefulWidget {
   const AddTransactionView({Key? key}) : super(key: key);
 
+  @override
+  _AddTransactionViewState createState() => _AddTransactionViewState();
+}
+
+class _AddTransactionViewState extends State<AddTransactionView> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Access the transaction controller after the widget is created
+    final transactionController = Provider.of<TransactionViewModel>(context, listen: false);
+
+    // Set default transaction type to "Expense" when the widget initializes
+    transactionController.updateSelectedTransactionType({"Expense"});
+
+    // Set default date to today
+    transactionController.updateSelectedDate(DateTime.now());
+  }
   @override
   Widget build(BuildContext context) {
     final transactionController = Provider.of<TransactionViewModel>(context);
 
-    final nowDate = DateTime.now();
-
     //TODO use user service to get the user id
     final userId = FirebaseAuth.instance.currentUser!.uid;
-
-    transactionController.updateSelectedDate(nowDate);
-
-    Set<String> selectedTransactionType = {"Income"}; // Initialize with default value
 
     return Scaffold(
       appBar: AppBar(
@@ -49,38 +61,40 @@ class AddTransactionView extends StatelessWidget {
                 labelText: 'Bank Name',
               ),
             ),
-            SegmentedButton(
-              style: SegmentedButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                selectedBackgroundColor: Theme.of(context).colorScheme.primaryContainer,
-              ),
-              segments: [
-                ButtonSegment(
-                  value: "Income",
-                  label: Text('Income'),
-                  icon: Icon(Icons.add),
-                ),
-                ButtonSegment(
-                  value: "Expense",
-                  label: Text('Expense'),
-                  icon: Icon(Icons.remove),
-                ),
-              ],
-              selected: selectedTransactionType, // Directly use currentTransactionType
-              onSelectionChanged: (selected) {
-                selectedTransactionType = selected;
-                transactionController.typeController.text = selected.first;
-                print('Selected: $selected');
-                print('Type: ${transactionController.typeController.text}');
+            Consumer<TransactionViewModel>(
+              builder: (context, transactionController, _) {
+                return SegmentedButton(
+                  style: SegmentedButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    selectedBackgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                  ),
+                  segments: [
+                    ButtonSegment(
+                      value: "Expense",
+                      label: Text('Expense'),
+                      icon: Icon(Icons.remove),
+                    ),
+                    ButtonSegment(
+                      value: "Income",
+                      label: Text('Income'),
+                      icon: Icon(Icons.add),
+                    ),
+                  ],
+                  selected: transactionController.selectedTransactionType,
+                  onSelectionChanged: (selected) {
+                    transactionController.updateSelectedTransactionType(selected);
+                    transactionController.notify();
+                  },
+                  emptySelectionAllowed: false,
+                );
               },
-              emptySelectionAllowed: false,
             ),
             ElevatedButton(
               onPressed: () {
                 context.pushNamed('categories');
               },
               child: Icon(
-                categoryIcons[transactionController.categoryController.text] ?? Icons.error,
+                categoryIcons[transactionController.categoryController.text] ?? Icons.question_mark,
               ),
             ),
             ElevatedButton(
@@ -103,8 +117,7 @@ class AddTransactionView extends StatelessWidget {
               onPressed: () {
                 transactionController.addTransaction(userId);
 
-                transactionController.fetchTransactionsForCurrentUser();
-
+                //TODO show only if no error
                 InfoFloatingSnackbar.show(context, 'Transaction added');
 
                 context.pop();

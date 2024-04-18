@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
+import '../../common_widgets/dialog/confirmation_delete_dialog.dart';
+
 
 import 'category_icons.dart';
 
@@ -89,7 +91,15 @@ class TransactionFocusView extends StatelessWidget {
             ),
             _buildButton(
               onPressed: () {
-                transactionController.deleteTransaction(userId, transaction.transactionId);
+
+                showConfirmationDeletionDialog(context, 'Are you sure you want to delete this transaction?', transaction.label)
+                    .then((value) {
+                  if (value == true) {
+                    transactionController.deleteTransaction(userId, transaction.transactionId);
+                    context.pop();
+                  }
+                });
+
                 context.pop();
               },
               text: 'Delete',

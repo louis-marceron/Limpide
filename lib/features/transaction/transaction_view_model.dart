@@ -19,6 +19,8 @@ class TransactionViewModel with ChangeNotifier {
 
   List<Transaction> get transactions => _transactions;
 
+  Set<String> selectedTransactionType = {"Expense"};
+
   List<Transaction> get recentTransactions => _transactions
       .where((transaction) =>
           transaction.date.isAfter(DateTime.now().subtract(Duration(days: 7))))
@@ -38,6 +40,7 @@ class TransactionViewModel with ChangeNotifier {
   }
 
   void fetchTransactionsForCurrentUser() async {
+    print('Fetching transactions for current user');
     try {
       String userId =
           FirebaseAuth.instance.currentUser?.uid ?? ''; // handle null case
@@ -54,6 +57,8 @@ class TransactionViewModel with ChangeNotifier {
   }
 
   Future<void> addTransaction(String userId) async {
+    print('Adding transaction');
+    print('Type : ${typeController.text}');
     // Create a new Transaction object using the data from controllers
     final transaction = Transaction(
       transactionId: Uuid().v4(),
@@ -182,5 +187,14 @@ class TransactionViewModel with ChangeNotifier {
             transaction.type == 'Income' && transaction.date.year == year)
         .fold(0.0, (sum, transaction) => sum + transaction.amount);
     return total;
+  }
+
+  void updateSelectedTransactionType(Set<String> selectedType) {
+    selectedTransactionType = selectedType;
+    typeController.text = selectedType.first;
+  }
+
+  void notify() {
+    notifyListeners();
   }
 }
