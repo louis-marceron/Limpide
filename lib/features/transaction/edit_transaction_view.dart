@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import '../../common_widgets/snackbar/info_floating_snackbar.dart';
 import './category_icons.dart';
 
-
 class EditTransactionView extends StatefulWidget {
   final String? transactionId;
 
@@ -17,11 +16,10 @@ class EditTransactionView extends StatefulWidget {
   _EditTransactionViewState createState() => _EditTransactionViewState();
 }
 
-
 class _EditTransactionViewState extends State<EditTransactionView> {
   late TransactionViewModel _transactionController;
   late Transaction? _transaction;
-  late String _selectedCategory = ''; // declare here
+  late String _selectedCategory = '';
 
   @override
   void initState() {
@@ -76,11 +74,34 @@ class _EditTransactionViewState extends State<EditTransactionView> {
                         labelText: 'Amount',
                       ),
                     ),
-                    TextField(
-                      controller: _transactionController.typeController,
-                      decoration: InputDecoration(
-                        labelText: 'Type',
-                      ),
+                    Consumer<TransactionViewModel>(
+                      builder: (context, transactionController, _) {
+                        //FIXME Default value of the segmented button is not set
+                        return SegmentedButton(
+                          style: SegmentedButton.styleFrom(
+                            backgroundColor: Theme.of(context).colorScheme.primary,
+                            selectedBackgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                          ),
+                          segments: [
+                            ButtonSegment(
+                              value: "Expense",
+                              label: Text('Expense'),
+                              icon: Icon(Icons.remove),
+                            ),
+                            ButtonSegment(
+                              value: "Income",
+                              label: Text('Income'),
+                              icon: Icon(Icons.add),
+                            ),
+                          ],
+                          selected: transactionController.selectedTransactionType,
+                          onSelectionChanged: (selected) {
+                            transactionController.updateSelectedTransactionType(selected);
+                            transactionController.notify();
+                          },
+                          emptySelectionAllowed: false,
+                        );
+                      },
                     ),
                     TextField(
                       controller: _transactionController.bankNameController,
@@ -130,8 +151,6 @@ class _EditTransactionViewState extends State<EditTransactionView> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        print('Dans le edit transaction view');
-                        print(_transactionController.categoryController.text);
 
                         _transactionController.categoryController.text = _selectedCategory;
 
@@ -148,7 +167,7 @@ class _EditTransactionViewState extends State<EditTransactionView> {
                         InfoFloatingSnackbar.show(context, 'Transaction modified');
 
                         // Navigate back to the previous screen
-                        context.pop();
+                          context.go("/transactions");
                       },
                       child: Text('Update Transaction'),
                     ),

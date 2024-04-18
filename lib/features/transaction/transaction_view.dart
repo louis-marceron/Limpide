@@ -26,8 +26,6 @@ class _TransactionsViewState extends State<TransactionsView> {
 
   @override
   Widget build(BuildContext context) {
-    // Retrieve the current user's ID
-    final userId = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
       appBar: AppBar(
@@ -35,6 +33,7 @@ class _TransactionsViewState extends State<TransactionsView> {
       ),
       body: Consumer<TransactionViewModel>(
         builder: (context, transactionController, _) {
+
           // Group transactions by day
           final transactionsByDay = _groupTransactionsByDay(transactionController.transactions);
 
@@ -120,6 +119,7 @@ class _TransactionsViewState extends State<TransactionsView> {
       }
       groupedTransactions[date]!.add(transaction);
     }
+
     // Convert map values to list
     return groupedTransactions.values.toList();
   }
