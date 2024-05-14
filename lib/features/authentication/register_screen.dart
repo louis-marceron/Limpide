@@ -1,4 +1,5 @@
 import 'package:banking_app/constants/routes.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:banking_app/common_widgets/snackbar/info_floating_snackbar.dart';
@@ -61,6 +62,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       email: email,
                       password: password,
                     );
+
+                    final user = FirebaseAuth.instance.currentUser;
+
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(user!.uid)
+                        .set({
+                      'uid': user.uid,
+                    });
+
                     // After successful registration, navigate to home screen
                     context.go(Routes.home);
                   } on FirebaseAuthException catch (e) {
