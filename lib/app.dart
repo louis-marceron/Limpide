@@ -1,5 +1,4 @@
 import 'package:banking_app/features/transaction/transaction_view_model.dart';
-import 'package:banking_app/routing/router.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +23,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-const Color seedColor = Color(0xFF047080);
+const Color seedColor = Color(0x00576E);
 
 final ThemeData lightTheme = ThemeData(
   colorScheme: ColorScheme.fromSeed(
