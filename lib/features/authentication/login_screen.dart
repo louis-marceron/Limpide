@@ -11,6 +11,8 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
+  bool _showPassword = true;
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -29,22 +31,38 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(16.0),
               child: TextField(
+                keyboardType: TextInputType.emailAddress,
                 controller: _emailController,
                 decoration: InputDecoration(
                   labelText: 'Email',
+                  filled: false,
+                  border: OutlineInputBorder(),
                 ),
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(16.0),
               child: TextField(
+                keyboardType: TextInputType.visiblePassword,
                 controller: _passwordController,
                 decoration: InputDecoration(
                   labelText: 'Password',
+                  filled: false,
+                  border: OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(_showPassword
+                        ? Icons.visibility_off
+                        : Icons.visibility),
+                    onPressed: () {
+                      setState(() {
+                        _showPassword = !_showPassword;
+                      });
+                    },
+                  ),
                 ),
-                obscureText: true, // Hide password
+                obscureText: !_showPassword, // Hide or show password
               ),
             ),
             Padding(
@@ -53,13 +71,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () async {
                   String email = _emailController.text;
                   String password = _passwordController.text;
-                  // Use email and password for login logic
-                  print('Email: $email, Password: $password');
                   try {
                     await FirebaseAuth.instance.signInWithEmailAndPassword(
                         email: email, password: password);
                   } on FirebaseAuthException catch (e) {
-                    if (e.code == 'user-not-found') {
+                    if (e.code == 'invalid-email') {
+                      InfoFloatingSnackbar.show(
+                          context, 'Invalid email. Please try again.');
+                    } else if (e.code == 'user-not-found') {
                       InfoFloatingSnackbar.show(
                           context, 'No user found for that email.');
                     } else if (e.code == 'wrong-password') {
