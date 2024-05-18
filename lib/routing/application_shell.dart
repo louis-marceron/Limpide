@@ -26,6 +26,7 @@ class ApplicationShell extends StatelessWidget {
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: NavigationBar(
+        backgroundColor: Theme.of(context).colorScheme.surface,
         destinations: <NavigationDestination>[
           NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(
