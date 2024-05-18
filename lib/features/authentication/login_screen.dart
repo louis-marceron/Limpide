@@ -11,7 +11,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-  bool _showPassword = true;
+  bool _showPassword = false;
 
   @override
   void dispose() {

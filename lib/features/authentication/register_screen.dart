@@ -14,6 +14,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
+  bool _showPassword = false;
+
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -35,19 +38,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
               padding: EdgeInsets.all(8.0),
               child: TextField(
                 controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   labelText: 'Email',
+                  filled: false,
+                  border: OutlineInputBorder(),
                 ),
               ),
             ),
             Padding(
-              padding: EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(16.0),
               child: TextField(
+                keyboardType: TextInputType.visiblePassword,
                 controller: _passwordController,
                 decoration: InputDecoration(
                   labelText: 'Password',
+                  filled: false,
+                  border: OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    icon: Icon(_showPassword
+                        ? Icons.visibility_off
+                        : Icons.visibility),
+                    onPressed: () {
+                      setState(() {
+                        _showPassword = !_showPassword;
+                      });
+                    },
+                  ),
                 ),
-                obscureText: true, // Hide password
+                obscureText: !_showPassword, // Hide or show password
               ),
             ),
             Padding(
@@ -75,7 +94,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     // After successful registration, navigate to home screen
                     context.go(Routes.home);
                   } on FirebaseAuthException catch (e) {
-                    if (e.code == 'weak-password') {
+
+                    if(e.code == 'invalid-email') {
+                      InfoFloatingSnackbar.show(
+                          context, 'Invalid email. Please try again.');
+                    } else if (e.code == 'weak-password') {
                       InfoFloatingSnackbar.show(
                           context, 'The password provided is too weak.');
                     } else if (e.code == 'email-already-in-use') {
