@@ -24,17 +24,17 @@ class _EditTransactionViewState extends State<EditTransactionView> {
   @override
   void initState() {
     super.initState();
-  _transactionController = Provider.of<TransactionViewModel>(context, listen: false);
-  _transactionController.fetchTransactionsForCurrentUser();
-}
+    _transactionController = Provider.of<TransactionViewModel>(context, listen: false);
+    _transactionController.fetchTransactionsForCurrentUser();
+  }
 
-@override
-Widget build(BuildContext context) {
-  final userId = FirebaseAuth.instance.currentUser?.uid;
+  @override
+  Widget build(BuildContext context) {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
 
-  return Scaffold(
-    appBar: AppBar(
-      title: Text('Edit Transaction'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Edit Transaction'),
       ),
       body: Center(
         child: FutureBuilder<Transaction?>(
@@ -76,7 +76,7 @@ Widget build(BuildContext context) {
                     ),
                     Consumer<TransactionViewModel>(
                       builder: (context, transactionController, _) {
-                        //FIXME Default value of the segmented button is not set
+                        // Set default value of the segmented button
                         return SegmentedButton(
                           style: SegmentedButton.styleFrom(
                             backgroundColor: Theme.of(context).colorScheme.primary,
@@ -142,32 +142,34 @@ Widget build(BuildContext context) {
                           _transactionController.updateSelectedDate(selectedDate);
                         } else {
                           print('No date selected');
-                          print(_transactionController.dateController.text.isNotEmpty
-                              ? DateTime.tryParse(_transactionController.dateController.text) ?? DateTime.now()
-                              : DateTime.now());
                         }
                       },
                       child: Icon(Icons.calendar_today),
                     ),
                     ElevatedButton(
                       onPressed: () {
+                        if (_validateInputs(_transactionController)) {
+                          try {
+                            _transactionController.categoryController.text = _selectedCategory;
 
-                        _transactionController.categoryController.text = _selectedCategory;
+                            print(_transactionController.categoryController.text);
 
-                        print(_transactionController.categoryController.text);
+                            // Create the updated transaction object using ViewModel method
+                            final updatedTransaction = _transactionController.createUpdatedTransaction(_transaction!, _transactionController);
 
-                        // Create the updated transaction object using ViewModel method
-                        final updatedTransaction = _transactionController.createUpdatedTransaction(_transaction!, _transactionController);
+                            // Call the updateTransaction method from the ViewModel
+                            _transactionController.updateTransaction(userId ?? "", updatedTransaction);
 
-                        // Call the updateTransaction method from the ViewModel
-                        _transactionController.updateTransaction(userId ?? "", updatedTransaction);
+                            _transactionController.fetchTransactionsForCurrentUser();
 
-                        _transactionController.fetchTransactionsForCurrentUser();
+                            InfoFloatingSnackbar.show(context, 'Transaction modified');
 
-                        InfoFloatingSnackbar.show(context, 'Transaction modified');
-
-                        // Navigate back to the previous screen
-                          context.go("/transactions");
+                            // Navigate back to the previous screen
+                            context.go("/transactions");
+                          } catch (e) {
+                            InfoFloatingSnackbar.show(context, 'Error updating transaction: $e');
+                          }
+                        }
                       },
                       child: Text('Update Transaction'),
                     ),
@@ -179,5 +181,23 @@ Widget build(BuildContext context) {
         ),
       ),
     );
+  }
+
+  bool _validateInputs(TransactionViewModel transactionController) {
+    String label = transactionController.labelController.text;
+    String bankName = transactionController.bankNameController.text;
+    String amount = transactionController.amountController.text;
+
+    if (label.isEmpty || amount.isEmpty || bankName.isEmpty) {
+      InfoFloatingSnackbar.show(context, 'Please fill in all fields');
+      return false;
+    }
+
+    if (double.tryParse(amount) == null) {
+      InfoFloatingSnackbar.show(context, 'Please enter a valid amount');
+      return false;
+    }
+
+    return true;
   }
 }

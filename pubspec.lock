@@ -261,6 +261,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  form_validator:
+    dependency: "direct main"
+    description:
+      name: form_validator
+      sha256: ad320b967e805a17f6dbe0d176888d42f14bf908dcfa8f68906b8a3808e2a1b0
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.4"
   go_router:
     dependency: "direct main"
     description:
