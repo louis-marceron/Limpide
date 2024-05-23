@@ -1,7 +1,9 @@
+import 'package:banking_app/extensions/color_extension.dart';
 import 'package:banking_app/features/transaction/total_balance_widget.dart';
 import 'package:banking_app/features/transaction/transaction_view_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:banking_app/common_widgets/root_app_bar.dart';
 

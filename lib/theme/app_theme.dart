@@ -230,7 +230,8 @@ class MaterialTheme {
       surfaceDim: Color(4279178263),
       surfaceBright: Color(4281678397),
       surfaceContainerLowest: Color(4278849297),
-      surfaceContainerLow: Color(4279704607),
+      // surfaceContainerLow: Color(4279704607),
+      surfaceContainerLow: Color(0xFF171C1F),
       surfaceContainer: Color(4279967779),
       surfaceContainerHigh: Color(4280625965),
       surfaceContainerHighest: Color(4281349688),
@@ -367,7 +368,7 @@ class MaterialTheme {
           bodyColor: colorScheme.onSurface,
           displayColor: colorScheme.onSurface,
         ),
-        scaffoldBackgroundColor: colorScheme.background,
+        scaffoldBackgroundColor: colorScheme.surface,
         canvasColor: colorScheme.surface,
       );
 
@@ -500,11 +501,13 @@ extension MaterialSchemeUtils on MaterialScheme {
       onError: onError,
       errorContainer: errorContainer,
       onErrorContainer: onErrorContainer,
-      background: background,
-      onBackground: onBackground,
       surface: surface,
       onSurface: onSurface,
-      surfaceVariant: surfaceVariant,
+      surfaceContainerLowest: surfaceContainerLowest,
+      surfaceContainerLow: surfaceContainerLow,
+      surfaceContainer: surfaceContainer,
+      surfaceContainerHigh: surfaceContainerHigh,
+      surfaceContainerHighest: surfaceContainerHighest,
       onSurfaceVariant: onSurfaceVariant,
       outline: outline,
       outlineVariant: outlineVariant,
@@ -551,3 +554,4 @@ class ColorFamily {
   final Color colorContainer;
   final Color onColorContainer;
 }
+
