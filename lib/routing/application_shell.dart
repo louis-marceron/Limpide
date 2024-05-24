@@ -30,7 +30,7 @@ class ApplicationShell extends StatelessWidget {
           context.onSurfaceVariant,
           BlendMode.srcIn,
         ),
-        semanticsLabel: 'Transactions logo');
+        semanticsLabel: 'Transaction logo');
 
     final Widget homeOutlinedIcon = SvgPicture.asset('assets/home_outlined.svg',
         colorFilter: ColorFilter.mode(

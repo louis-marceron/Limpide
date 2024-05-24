@@ -1,5 +1,5 @@
+import 'package:banking_app/common_widgets/root_app_bar.dart';
 import 'package:banking_app/features/transaction/transaction_model.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -29,15 +29,7 @@ class _TransactionsViewState extends State<TransactionsView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Transactions'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () => context.push(Routes.profile),
-          )
-        ],
-      ),
+      appBar: RootAppBar(title: 'Transactions'),
       body: Consumer<TransactionViewModel>(
         builder: (context, transactionController, _) {
           // Group transactions by day

@@ -7,9 +7,7 @@ import './category_icons.dart';
 class CategoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     final transactionController = Provider.of<TransactionViewModel>(context);
-
 
     //TODO Create subcategories
     return Scaffold(
@@ -28,7 +26,9 @@ class CategoryView extends StatelessWidget {
             onTap: () {
               // Handle onTap event if needed
 
-              Provider.of<TransactionViewModel>(context, listen: false).categoryController.text = category;
+              Provider.of<TransactionViewModel>(context, listen: false)
+                  .categoryController
+                  .text = category;
 
               transactionController.categoryController.text = category;
 

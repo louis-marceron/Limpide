@@ -5,17 +5,15 @@ import 'package:banking_app/constants/routes.dart';
 class RootAppBar extends StatelessWidget implements PreferredSizeWidget {
   const RootAppBar({
     super.key,
+    required this.title,
   });
+
+  final title;
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      leading: IconButton(
-        icon: const Icon(Icons.menu),
-        onPressed: () {},
-      ),
-      title: const Text('Home'),
-      centerTitle: true,
+      title: Text(this.title),
       actions: [
         IconButton(
           icon: const Icon(Icons.account_circle_outlined),
