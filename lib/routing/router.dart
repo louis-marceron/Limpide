@@ -2,18 +2,18 @@ import 'package:banking_app/features/authentication/auth_selection_screen.dart';
 import 'package:banking_app/features/authentication/login_screen.dart';
 import 'package:banking_app/features/authentication/profile_screen.dart';
 import 'package:banking_app/features/authentication/register_screen.dart';
-import 'package:banking_app/features/transaction/home_screen.dart';
-import 'package:banking_app/features/transaction/transaction_focus_view.dart';
-import 'package:banking_app/features/transaction/transaction_view.dart';
-import 'package:banking_app/features/transaction/add_transaction_view.dart';
+import 'package:banking_app/features/transaction/view/home_view.dart';
+import 'package:banking_app/features/transaction/view/transaction_focus_view.dart';
+import 'package:banking_app/features/transaction/view/transaction_view.dart';
+import 'package:banking_app/features/transaction/view/add_transaction_view.dart';
 import 'package:banking_app/common_widgets/mock_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../constants/routes.dart';
-import '../features/transaction/category_view.dart';
-import '../features/transaction/edit_transaction_view.dart';
+import '../features/transaction/view/category_view.dart';
+import '../features/transaction/view/edit_transaction_view.dart';
 import './application_shell.dart';
 
 // I don't really understand the purpose of the keys
@@ -43,7 +43,7 @@ final goRouter = GoRouter(
             GoRoute(
               path: Routes.home,
               pageBuilder: (context, state) => NoTransitionPage(
-                child: HomeScreen(),
+                child: HomeView(),
               ),
             ),
           ],
@@ -130,8 +130,9 @@ final goRouter = GoRouter(
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
       path: Routes.profile,
-      pageBuilder: (context, state) => NoTransitionPage(
+      pageBuilder: (context, state) => CustomTransitionPage(
         child: ProfileScreen(),
+        transitionsBuilder: subpageAnimation,
       ),
     ),
   ],
@@ -157,3 +158,16 @@ final goRouter = GoRouter(
     return null;
   },
 );
+
+Widget subpageAnimation(context, animation, secondaryAnimation, child) {
+  const begin = Offset(1.0, 0.0);
+  const end = Offset.zero;
+  const curve = Curves.easeInOut;
+
+  var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+  return SlideTransition(
+    position: animation.drive(tween),
+    child: child,
+  );
+}

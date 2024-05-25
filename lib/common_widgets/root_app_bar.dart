@@ -12,14 +12,17 @@ class RootAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      title: Text(this.title),
-      actions: [
-        IconButton(
-          icon: const Icon(Icons.account_circle_outlined),
-          onPressed: () => context.push(Routes.profile),
-        )
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: AppBar(
+        title: Text(this.title),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.account_circle_outlined),
+            onPressed: () => context.push(Routes.profile),
+          )
+        ],
+      ),
     );
   }
 

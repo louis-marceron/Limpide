@@ -1,4 +1,4 @@
-import 'package:banking_app/features/transaction/transaction_view_model.dart';
+import 'package:banking_app/features/transaction/viewmodel/transaction_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
