@@ -2,6 +2,7 @@ import 'package:banking_app/features/authentication/auth_selection_screen.dart';
 import 'package:banking_app/features/authentication/login_screen.dart';
 import 'package:banking_app/features/authentication/profile_screen.dart';
 import 'package:banking_app/features/authentication/register_screen.dart';
+import 'package:banking_app/features/stats/statistics_view.dart';
 import 'package:banking_app/features/transaction/home_screen.dart';
 import 'package:banking_app/features/transaction/transaction_focus_view.dart';
 import 'package:banking_app/features/transaction/transaction_view.dart';
@@ -90,9 +91,7 @@ final goRouter = GoRouter(
             GoRoute(
               path: Routes.statistics,
               pageBuilder: (context, state) => NoTransitionPage(
-                child: MockPage(
-                  welcomeText: 'Statistics',
-                ),
+                child: StatisticsView(),
               ),
             )
           ],

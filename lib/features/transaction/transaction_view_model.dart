@@ -174,6 +174,11 @@ class TransactionViewModel with ChangeNotifier {
     return total;
   }
 
+  Future<List<Transaction>> fetchAllTransactionForMonth(String userId, int month, int year) async {
+    await fetchTransactions(userId);
+    return _transactions.where((transaction) => transaction.date.month == month && transaction.date.year == year).toList();
+  }
+
   Future<double> fetchExpensesForYear(String userId, int year) async {
     await fetchTransactions(userId); // Ensure transactions are loaded
     final double total = _transactions
