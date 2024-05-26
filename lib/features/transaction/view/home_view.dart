@@ -78,7 +78,8 @@ class CustomCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final shadow = Theme.of(context).colorScheme.shadow;
-    final surfaceVariant = Theme.of(context).colorScheme.surfaceContainerHighest;
+    final surfaceVariant =
+        Theme.of(context).colorScheme.surfaceContainerHighest;
 
     return Card(
       shape: shape ??

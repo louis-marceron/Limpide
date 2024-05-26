@@ -57,8 +57,8 @@ class DefaultFirebaseOptions {
     appId: '1:756388383425:android:27fa2559f90a86bb4ea240',
     messagingSenderId: '756388383425',
     projectId: 'bankingapp-76a24',
-    databaseURL: 'https://bankingapp-76a24-default-rtdb.europe-west1.firebasedatabase.app',
+    databaseURL:
+        'https://bankingapp-76a24-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'bankingapp-76a24.appspot.com',
   );
-
 }
