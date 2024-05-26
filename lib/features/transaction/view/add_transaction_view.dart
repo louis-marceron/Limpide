@@ -19,7 +19,8 @@ class _AddTransactionViewState extends State<AddTransactionView> {
     super.initState();
 
     // Access the transaction controller after the widget is created
-    final transactionController = Provider.of<TransactionViewModel>(context, listen: false);
+    final transactionController =
+        Provider.of<TransactionViewModel>(context, listen: false);
 
     // Set default transaction type to "Expense" when the widget initializes
     transactionController.updateSelectedTransactionType({"Expense"});
@@ -27,6 +28,7 @@ class _AddTransactionViewState extends State<AddTransactionView> {
     // Set default date to today
     transactionController.updateSelectedDate(DateTime.now());
   }
+
   @override
   Widget build(BuildContext context) {
     final transactionController = Provider.of<TransactionViewModel>(context);
@@ -66,7 +68,8 @@ class _AddTransactionViewState extends State<AddTransactionView> {
                 return SegmentedButton(
                   style: SegmentedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.primary,
-                    selectedBackgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                    selectedBackgroundColor:
+                        Theme.of(context).colorScheme.primaryContainer,
                   ),
                   segments: [
                     ButtonSegment(
@@ -82,7 +85,8 @@ class _AddTransactionViewState extends State<AddTransactionView> {
                   ],
                   selected: transactionController.selectedTransactionType,
                   onSelectionChanged: (selected) {
-                    transactionController.updateSelectedTransactionType(selected);
+                    transactionController
+                        .updateSelectedTransactionType(selected);
                     transactionController.notify();
                   },
                   emptySelectionAllowed: false,
@@ -94,7 +98,9 @@ class _AddTransactionViewState extends State<AddTransactionView> {
                 context.pushNamed('categories');
               },
               child: Icon(
-                categoryIcons[transactionController.categoryController.text] ?? Icons.question_mark,
+                categories[transactionController.categoryController.text]
+                        ?.icon ??
+                    Icons.question_mark,
               ),
             ),
             ElevatedButton(

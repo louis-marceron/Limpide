@@ -29,7 +29,7 @@ class TransactionViewModel with ChangeNotifier {
 
   Future<List<Transaction>> fetchTransactions(String userId) async {
     if (!_hasFetchedTransactions) {
-      await Future.delayed(Duration(seconds: 3));
+      // await Future.delayed(Duration(seconds: 3));
       _transactions = await _transactionService.fetchTransactions(userId);
       _hasFetchedTransactions = true;
       notifyListeners();

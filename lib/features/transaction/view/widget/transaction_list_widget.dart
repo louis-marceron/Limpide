@@ -30,21 +30,20 @@ class TransactionListWidget extends StatelessWidget {
         final transactionsByDay =
             _groupTransactionsByTimePeriod(transactionController.transactions);
 
-        return ListView.builder(
+        return ListView.separated(
+          separatorBuilder: (costext, index) => SizedBox(height: 20),
           // Prevent FAB from hiding the last item
-          padding: EdgeInsets.only(bottom: 125),
+          padding: EdgeInsets.only(bottom: 128),
           itemCount: transactionsByDay.length,
           itemBuilder: (context, index) {
             final dayTransactions = transactionsByDay[index];
             final date = dayTransactions[0].date;
             final formattedDate = formatRelativeDate(date);
 
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: TransactionGroupWidget(
-                title: formattedDate,
-                transactions: dayTransactions,
-              ),
+            return TransactionGroupWidget(
+              title: formattedDate,
+              transactions: dayTransactions,
+              key: ValueKey(formattedDate),
             );
           },
         );
@@ -54,18 +53,54 @@ class TransactionListWidget extends StatelessWidget {
 
   List<List<Transaction>> _groupTransactionsByTimePeriod(
       List<Transaction> transactions) {
-    // Group transactions by day
     final Map<DateTime, List<Transaction>> groupedTransactions = {};
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = DateTime(now.year, now.month, now.day - 1);
+
     for (final transaction in transactions) {
-      final date = DateTime(
-          transaction.date.year, transaction.date.month, transaction.date.day);
-      if (!groupedTransactions.containsKey(date)) {
-        groupedTransactions[date] = [];
+      final transactionExactDate = transaction.date;
+      final transactionMonthAndYear = DateTime(
+        transaction.date.year,
+        transaction.date.month,
+      );
+      final isToday = transactionExactDate.isAfter(today);
+      final isYesterday = transactionExactDate.isAfter(yesterday);
+
+      if (isToday) {
+        if (!groupedTransactions.containsKey(today)) {
+          groupedTransactions[today] = [];
+        }
+        groupedTransactions[today]!.add(transaction);
+        continue;
       }
-      groupedTransactions[date]!.add(transaction);
+
+      if (isYesterday) {
+        if (!groupedTransactions.containsKey(yesterday)) {
+          groupedTransactions[yesterday] = [];
+        }
+        groupedTransactions[yesterday]!.add(transaction);
+        continue;
+      }
+
+      if (!groupedTransactions.containsKey(transactionMonthAndYear)) {
+        groupedTransactions[transactionMonthAndYear] = [];
+      }
+      groupedTransactions[transactionMonthAndYear]!.add(transaction);
     }
 
-    // Convert map values to list
-    return groupedTransactions.values.toList();
+    // Convert map entries to a list and sort by date (most recent first)
+    final sortedEntries = groupedTransactions.entries.toList()
+      ..sort((a, b) => b.key.compareTo(a.key));
+
+    // Sort transactions within each group (most recent first)
+    for (var entry in sortedEntries) {
+      entry.value.sort((a, b) => b.date.compareTo(a.date));
+    }
+
+    // Convert sorted entries back to a map
+    final sortedGroupedTransactions = Map.fromEntries(sortedEntries);
+
+    return sortedGroupedTransactions.values.toList();
   }
 }

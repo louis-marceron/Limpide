@@ -64,21 +64,10 @@ final goRouter = GoRouter(
                   ),
                 ),
                 GoRoute(
-                  path: 'edit/:transactionId',
-                  name: 'edit',
-                  builder: (context, state) => EditTransactionView(
-                      transactionId: state.pathParameters['transactionId']),
-                ),
-                GoRoute(
                   path: 'detail/:transactionId',
                   name: 'details',
                   builder: (context, state) => TransactionFocusView(
                       transactionId: state.pathParameters['transactionId']),
-                ),
-                GoRoute(
-                  path: 'categories',
-                  name: 'categories',
-                  builder: (context, state) => CategoryView(),
                 ),
               ],
             ),
@@ -105,6 +94,20 @@ final goRouter = GoRouter(
         child: MockPage(
           welcomeText: 'Settings',
         ),
+      ),
+    ),
+    GoRoute(
+      path: '/categories',
+      name: 'categories',
+      builder: (context, state) => CategoryView(),
+    ),
+    GoRoute(
+      path: '/edit/:transactionId',
+      name: 'edit',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        child: EditTransactionView(
+            transactionId: state.pathParameters['transactionId']),
+        transitionsBuilder: subpageAnimation,
       ),
     ),
     GoRoute(

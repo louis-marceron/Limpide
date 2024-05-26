@@ -24,21 +24,23 @@ class _EditTransactionViewState extends State<EditTransactionView> {
   @override
   void initState() {
     super.initState();
-  _transactionController = Provider.of<TransactionViewModel>(context, listen: false);
-  _transactionController.fetchTransactionsForCurrentUser();
-}
+    _transactionController =
+        Provider.of<TransactionViewModel>(context, listen: false);
+    _transactionController.fetchTransactionsForCurrentUser();
+  }
 
-@override
-Widget build(BuildContext context) {
-  final userId = FirebaseAuth.instance.currentUser?.uid;
+  @override
+  Widget build(BuildContext context) {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
 
-  return Scaffold(
-    appBar: AppBar(
-      title: Text('Edit Transaction'),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Edit Transaction'),
       ),
       body: Center(
         child: FutureBuilder<Transaction?>(
-          future: _transactionController.getTransactionById(userId ?? "", widget.transactionId ?? ""),
+          future: _transactionController.getTransactionById(
+              userId ?? "", widget.transactionId ?? ""),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return CircularProgressIndicator();
@@ -49,12 +51,17 @@ Widget build(BuildContext context) {
 
               // Prefill text controllers with transaction data
               if (_transaction != null) {
-                _transactionController.labelController.text = _transaction!.label;
-                _transactionController.amountController.text = _transaction!.amount.toString();
-                _transactionController.categoryController.text = _transaction!.category ?? '';
+                _transactionController.labelController.text =
+                    _transaction!.label;
+                _transactionController.amountController.text =
+                    _transaction!.amount.toString();
+                _transactionController.categoryController.text =
+                    _transaction!.category ?? '';
                 _transactionController.typeController.text = _transaction!.type;
-                _transactionController.bankNameController.text = _transaction!.bankName;
-                _transactionController.dateController.text = _transaction!.date.toString();
+                _transactionController.bankNameController.text =
+                    _transaction!.bankName;
+                _transactionController.dateController.text =
+                    _transaction!.date.toString();
               }
 
               return Padding(
@@ -79,8 +86,10 @@ Widget build(BuildContext context) {
                         //FIXME Default value of the segmented button is not set
                         return SegmentedButton(
                           style: SegmentedButton.styleFrom(
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            selectedBackgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            selectedBackgroundColor:
+                                Theme.of(context).colorScheme.primaryContainer,
                           ),
                           segments: [
                             ButtonSegment(
@@ -94,9 +103,11 @@ Widget build(BuildContext context) {
                               icon: Icon(Icons.add),
                             ),
                           ],
-                          selected: transactionController.selectedTransactionType,
+                          selected:
+                              transactionController.selectedTransactionType,
                           onSelectionChanged: (selected) {
-                            transactionController.updateSelectedTransactionType(selected);
+                            transactionController
+                                .updateSelectedTransactionType(selected);
                             transactionController.notify();
                           },
                           emptySelectionAllowed: false,
@@ -111,17 +122,19 @@ Widget build(BuildContext context) {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        context.pushNamed('categories').then((selectedCategory) {
-                          if (selectedCategory != null) {
-                            setState(() {
-                              print('Selected category: $selectedCategory');
-                              _selectedCategory = selectedCategory as String;
-                            });
-                          }
-                        });
+                        context.pushNamed('categories').then(
+                          (selectedCategory) {
+                            if (selectedCategory != null) {
+                              setState(() {
+                                print('Selected category: $selectedCategory');
+                                _selectedCategory = selectedCategory as String;
+                              });
+                            }
+                          },
+                        );
                       },
                       child: Icon(
-                        categoryIcons[_selectedCategory] ?? Icons.error,
+                        categories[_selectedCategory]?.icon ?? Icons.error,
                       ),
                     ),
                     ElevatedButton(
@@ -129,8 +142,11 @@ Widget build(BuildContext context) {
                         // Show date picker to select a new date
                         final selectedDate = await showDatePicker(
                           context: context,
-                          initialDate: _transactionController.dateController.text.isNotEmpty
-                              ? DateTime.tryParse(_transactionController.dateController.text) ?? DateTime.now()
+                          initialDate: _transactionController
+                                  .dateController.text.isNotEmpty
+                              ? DateTime.tryParse(_transactionController
+                                      .dateController.text) ??
+                                  DateTime.now()
                               : DateTime.now(),
                           firstDate: DateTime(DateTime.now().year - 1),
                           lastDate: DateTime(DateTime.now().year + 2),
@@ -139,11 +155,15 @@ Widget build(BuildContext context) {
                         // Update selected date in ViewModel
                         if (selectedDate != null) {
                           print('Selected date: $selectedDate');
-                          _transactionController.updateSelectedDate(selectedDate);
+                          _transactionController
+                              .updateSelectedDate(selectedDate);
                         } else {
                           print('No date selected');
-                          print(_transactionController.dateController.text.isNotEmpty
-                              ? DateTime.tryParse(_transactionController.dateController.text) ?? DateTime.now()
+                          print(_transactionController
+                                  .dateController.text.isNotEmpty
+                              ? DateTime.tryParse(_transactionController
+                                      .dateController.text) ??
+                                  DateTime.now()
                               : DateTime.now());
                         }
                       },
@@ -151,23 +171,28 @@ Widget build(BuildContext context) {
                     ),
                     ElevatedButton(
                       onPressed: () {
-
-                        _transactionController.categoryController.text = _selectedCategory;
+                        _transactionController.categoryController.text =
+                            _selectedCategory;
 
                         print(_transactionController.categoryController.text);
 
                         // Create the updated transaction object using ViewModel method
-                        final updatedTransaction = _transactionController.createUpdatedTransaction(_transaction!, _transactionController);
+                        final updatedTransaction =
+                            _transactionController.createUpdatedTransaction(
+                                _transaction!, _transactionController);
 
                         // Call the updateTransaction method from the ViewModel
-                        _transactionController.updateTransaction(userId ?? "", updatedTransaction);
+                        _transactionController.updateTransaction(
+                            userId ?? "", updatedTransaction);
 
-                        _transactionController.fetchTransactionsForCurrentUser();
+                        _transactionController
+                            .fetchTransactionsForCurrentUser();
 
-                        InfoFloatingSnackbar.show(context, 'Transaction modified');
+                        InfoFloatingSnackbar.show(
+                            context, 'Transaction modified');
 
                         // Navigate back to the previous screen
-                          context.go("/transactions");
+                        context.go("/transactions");
                       },
                       child: Text('Update Transaction'),
                     ),

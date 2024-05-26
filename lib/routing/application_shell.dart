@@ -44,7 +44,7 @@ class ApplicationShell extends StatelessWidget {
 
     return Scaffold(
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: navigationShell,
       ),
       appBar: RootAppBar(title: currentScreenName),

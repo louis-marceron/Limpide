@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../../common_widgets/dialog/confirmation_delete_dialog.dart';
 
-
 import '../../../common_widgets/category_icons.dart';
 
 class TransactionFocusView extends StatelessWidget {
@@ -33,7 +32,8 @@ class TransactionFocusView extends StatelessWidget {
   }
 
   Future<Transaction?> _fetchTransaction(BuildContext context) async {
-    final transactionController = Provider.of<TransactionViewModel>(context, listen: false);
+    final transactionController =
+        Provider.of<TransactionViewModel>(context, listen: false);
     final userId = FirebaseAuth.instance.currentUser?.uid;
 
     if (userId == null) {
@@ -42,7 +42,8 @@ class TransactionFocusView extends StatelessWidget {
       throw 'No transaction id provided';
     }
 
-    return await transactionController.getTransactionById(userId, transactionId!);
+    return await transactionController.getTransactionById(
+        userId, transactionId!);
   }
 
   Widget _buildLoading() {
@@ -63,8 +64,10 @@ class TransactionFocusView extends StatelessWidget {
     );
   }
 
-  Widget _buildTransactionDetails(BuildContext context, Transaction transaction) {
-    final transactionController = Provider.of<TransactionViewModel>(context, listen: false);
+  Widget _buildTransactionDetails(
+      BuildContext context, Transaction transaction) {
+    final transactionController =
+        Provider.of<TransactionViewModel>(context, listen: false);
     final userId = FirebaseAuth.instance.currentUser?.uid;
 
     if (userId == null) {
@@ -78,24 +81,30 @@ class TransactionFocusView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             _buildTransactionDetailRow('Transaction Label:', transaction.label),
-            _buildTransactionDetailRow('Transaction Amount:', transaction.amount.toString()),
-            _buildTransactionDetailRow('Transaction Date:', transaction.date.toString()),
+            _buildTransactionDetailRow(
+                'Transaction Amount:', transaction.amount.toString()),
+            _buildTransactionDetailRow(
+                'Transaction Date:', transaction.date.toString()),
             _buildTransactionDetailRow('Transaction Type:', transaction.type),
-            Icon(categoryIcons[transaction.category] ?? Icons.attach_money),
+            Icon(categories[transaction.category]?.icon ?? Icons.attach_money),
             _buildButton(
               onPressed: () {
                 var transactionId = transaction.transactionId;
-                context.pushNamed("edit", pathParameters: {'transactionId': transactionId});
+                context.pushNamed("edit",
+                    pathParameters: {'transactionId': transactionId});
               },
               text: 'Edit',
             ),
             _buildButton(
               onPressed: () {
-
-                showConfirmationDeletionDialog(context, 'Are you sure you want to delete this transaction?', transaction.label)
+                showConfirmationDeletionDialog(
+                        context,
+                        'Are you sure you want to delete this transaction?',
+                        transaction.label)
                     .then((value) {
                   if (value == true) {
-                    transactionController.deleteTransaction(userId, transaction.transactionId);
+                    transactionController.deleteTransaction(
+                        userId, transaction.transactionId);
                     context.pop();
                   }
                 });
@@ -131,7 +140,8 @@ class TransactionFocusView extends StatelessWidget {
     );
   }
 
-  Widget _buildScaffoldWithAppBar({required String title, required Widget body}) {
+  Widget _buildScaffoldWithAppBar(
+      {required String title, required Widget body}) {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),

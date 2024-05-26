@@ -15,10 +15,10 @@ class CategoryView extends StatelessWidget {
         title: Text('Categories'),
       ),
       body: ListView.builder(
-        itemCount: categoryIcons.length,
+        itemCount: categories.length,
         itemBuilder: (context, index) {
-          final category = categoryIcons.keys.elementAt(index);
-          final iconData = categoryIcons.values.elementAt(index);
+          final category = categories.keys.elementAt(index);
+          final iconData = categories.values.elementAt(index).icon;
 
           return ListTile(
             leading: Icon(iconData), // Display the icon

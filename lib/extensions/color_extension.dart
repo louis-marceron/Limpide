@@ -1,3 +1,4 @@
+import 'package:banking_app/theme/custom_color.dart';
 import 'package:flutter/material.dart';
 
 extension ColorHelper on BuildContext {
@@ -32,4 +33,6 @@ extension ColorHelper on BuildContext {
   Color get errorContainer => colorScheme.errorContainer;
   Color get onError => colorScheme.onError;
   Color get onErrorContainer => colorScheme.onErrorContainer;
+
+  Color get green => Theme.of(this).extension<CustomColor>()!.green!;
 }

@@ -27,16 +27,21 @@ class TransactionGroupWidget extends StatelessWidget {
         Card(
           margin: EdgeInsets.all(0),
           color: context.surfaceContainerLow,
+          shadowColor: Colors.transparent,
           child: Padding(
             padding: const EdgeInsets.all(4.0),
-            child: ListView.builder(
+            child: ListView.separated(
+              separatorBuilder: (context, index) => SizedBox(height: 4),
               shrinkWrap: true,
               // Prevent from scrolling inside a scrollable widget
               physics: NeverScrollableScrollPhysics(),
               itemCount: this.transactions.length,
               itemBuilder: (context, index) {
                 final transaction = this.transactions[index];
-                return TransactionItemWidget(transaction: transaction);
+                return TransactionItemWidget(
+                  transaction: transaction,
+                  key: ValueKey(transaction.transactionId),
+                );
               },
             ),
           ),

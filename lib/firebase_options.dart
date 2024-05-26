@@ -60,4 +60,5 @@ class DefaultFirebaseOptions {
     databaseURL: 'https://bankingapp-76a24-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'bankingapp-76a24.appspot.com',
   );
+
 }
