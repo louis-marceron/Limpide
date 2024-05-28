@@ -46,7 +46,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     filled: false,
                     border: OutlineInputBorder(),
                   ),
-                  validator: ValidationBuilder().email('Enter a valid email').build(),
+                  validator:
+                      ValidationBuilder().email('Enter a valid email').build(),
                 ),
                 SizedBox(height: 16.0),
                 TextFormField(
@@ -57,7 +58,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     filled: false,
                     border: OutlineInputBorder(),
                     suffixIcon: IconButton(
-                      icon: Icon(_showPassword ? Icons.visibility_off : Icons.visibility),
+                      icon: Icon(_showPassword
+                          ? Icons.visibility_off
+                          : Icons.visibility),
                       onPressed: () {
                         setState(() {
                           _showPassword = !_showPassword;
@@ -67,7 +70,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   obscureText: !_showPassword,
                   validator: ValidationBuilder()
-                      .minLength(6, 'Password must be at least 6 characters long')
+                      .minLength(
+                          6, 'Password must be at least 6 characters long')
                       .build(),
                 ),
                 SizedBox(height: 16.0),
@@ -77,7 +81,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       String email = _emailController.text;
                       String password = _passwordController.text;
                       try {
-                        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                        await FirebaseAuth.instance
+                            .createUserWithEmailAndPassword(
                           email: email,
                           password: password,
                         );
@@ -95,17 +100,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'invalid-email') {
                           setState(() {
-                            _emailController.text += ' '; // To trigger a rebuild
+                            _emailController.text +=
+                                ' '; // To trigger a rebuild
                           });
                           _formKey.currentState!.validate();
                         } else if (e.code == 'weak-password') {
                           setState(() {
-                            _passwordController.text += ' '; // To trigger a rebuild
+                            _passwordController.text +=
+                                ' '; // To trigger a rebuild
                           });
                           _formKey.currentState!.validate();
                         } else if (e.code == 'email-already-in-use') {
                           setState(() {
-                            _emailController.text += ' '; // To trigger a rebuild
+                            _emailController.text +=
+                                ' '; // To trigger a rebuild
                           });
                           _formKey.currentState!.validate();
                         } else {

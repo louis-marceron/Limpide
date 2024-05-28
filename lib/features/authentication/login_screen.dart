@@ -44,7 +44,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     filled: false,
                     border: OutlineInputBorder(),
                   ),
-                  validator: ValidationBuilder().email('Enter a valid email').build(),
+                  validator:
+                      ValidationBuilder().email('Enter a valid email').build(),
                 ),
                 SizedBox(height: 16.0),
                 TextFormField(
@@ -55,9 +56,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     filled: false,
                     border: OutlineInputBorder(),
                     suffixIcon: IconButton(
-                      icon: Icon(
-                          _showPassword ? Icons.visibility_off : Icons.visibility
-                      ),
+                      icon: Icon(_showPassword
+                          ? Icons.visibility_off
+                          : Icons.visibility),
                       onPressed: () {
                         setState(() {
                           _showPassword = !_showPassword;
@@ -67,7 +68,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   obscureText: !_showPassword, // Hide or show password
                   validator: ValidationBuilder()
-                      .minLength(6, 'Password must be at least 6 characters long')
+                      .minLength(
+                          6, 'Password must be at least 6 characters long')
                       .build(),
                 ),
                 SizedBox(height: 16.0),
@@ -82,21 +84,28 @@ class _LoginScreenState extends State<LoginScreen> {
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'invalid-email') {
                           setState(() {
-                            _emailController.text += ' '; // To trigger a rebuild
+                            _emailController.text +=
+                                ' '; // To trigger a rebuild
                           });
-                          InfoFloatingSnackbar.show(context, 'Invalid email format.');
+                          InfoFloatingSnackbar.show(
+                              context, 'Invalid email format.');
                         } else if (e.code == 'user-not-found') {
-                          InfoFloatingSnackbar.show(context, 'No user found for that email.');
+                          InfoFloatingSnackbar.show(
+                              context, 'No user found for that email.');
                         } else if (e.code == 'wrong-password') {
                           setState(() {
-                            _passwordController.text += ' '; // To trigger a rebuild
+                            _passwordController.text +=
+                                ' '; // To trigger a rebuild
                           });
-                          InfoFloatingSnackbar.show(context, 'Incorrect password.');
+                          InfoFloatingSnackbar.show(
+                              context, 'Incorrect password.');
                         } else {
-                          InfoFloatingSnackbar.show(context, 'Failed to sign in: ${e.message}');
+                          InfoFloatingSnackbar.show(
+                              context, 'Failed to sign in: ${e.message}');
                         }
                       } catch (e) {
-                        InfoFloatingSnackbar.show(context, 'An error occurred. Please try again.');
+                        InfoFloatingSnackbar.show(
+                            context, 'An error occurred. Please try again.');
                       }
                     }
                   },

@@ -11,7 +11,8 @@ class UserService {
           .limit(1)
           .get();
       if (querySnapshot.docs.isNotEmpty) {
-        return querySnapshot.docs.first.id; // Assuming user document ID is the user ID
+        return querySnapshot
+            .docs.first.id; // Assuming user document ID is the user ID
       } else {
         return null; // User with given email not found
       }
