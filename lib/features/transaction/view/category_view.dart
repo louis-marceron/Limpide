@@ -1,15 +1,13 @@
-import 'package:banking_app/features/transaction/transaction_view_model.dart';
+import 'package:banking_app/features/transaction/viewmodel/transaction_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import './category_icons.dart';
+import '../../../common_widgets/category_icons.dart';
 
 class CategoryView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     final transactionController = Provider.of<TransactionViewModel>(context);
-
 
     //TODO Create subcategories
     return Scaffold(
@@ -17,10 +15,10 @@ class CategoryView extends StatelessWidget {
         title: Text('Categories'),
       ),
       body: ListView.builder(
-        itemCount: categoryIcons.length,
+        itemCount: categories.length,
         itemBuilder: (context, index) {
-          final category = categoryIcons.keys.elementAt(index);
-          final iconData = categoryIcons.values.elementAt(index);
+          final category = categories.keys.elementAt(index);
+          final iconData = categories.values.elementAt(index).icon;
 
           return ListTile(
             leading: Icon(iconData), // Display the icon
@@ -28,7 +26,9 @@ class CategoryView extends StatelessWidget {
             onTap: () {
               // Handle onTap event if needed
 
-              Provider.of<TransactionViewModel>(context, listen: false).categoryController.text = category;
+              Provider.of<TransactionViewModel>(context, listen: false)
+                  .categoryController
+                  .text = category;
 
               transactionController.categoryController.text = category;
 

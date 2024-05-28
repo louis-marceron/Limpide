@@ -1,13 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
-import './transaction_model.dart';
-import './transaction_service.dart';
+import '../model/transaction_model.dart';
+import '../service/transaction_service.dart';
 
 class TransactionViewModel with ChangeNotifier {
   List<Transaction> _transactions = [];
   // For caching the transactions so that we don't have to fetch them again
   bool _hasFetchedTransactions = false;
+
   // FIXME use regular fields
   TransactionService _transactionService = TransactionService();
   TextEditingController labelController = TextEditingController();
@@ -26,33 +27,26 @@ class TransactionViewModel with ChangeNotifier {
           transaction.date.isAfter(DateTime.now().subtract(Duration(days: 7))))
       .toList();
 
-  Future<void> fetchTransactions(String userId) async {
-    try {
-      if (!_hasFetchedTransactions) {
-        _transactions = await _transactionService.fetchTransactions(userId);
-        _hasFetchedTransactions = true;
-        notifyListeners();
-      }
-    } catch (e) {
-      print('Error fetching transactions: $e');
-      // Handle the error appropriately, such as showing an error message
+  Future<List<Transaction>> fetchTransactions(String userId) async {
+    if (!_hasFetchedTransactions) {
+      // await Future.delayed(Duration(seconds: 3));
+      _transactions = await _transactionService.fetchTransactions(userId);
+      _hasFetchedTransactions = true;
+      notifyListeners();
     }
+
+    return _transactions;
   }
 
-  void fetchTransactionsForCurrentUser() async {
-    print('Fetching transactions for current user');
-    try {
-      String userId =
-          FirebaseAuth.instance.currentUser?.uid ?? ''; // handle null case
-      if (userId.isNotEmpty) {
-        await fetchTransactions(userId);
-      } else {
-        print('User is not authenticated');
-        // Handle case where user is not authenticated
-      }
-    } catch (e) {
-      print('Error fetching transactions: $e');
-      // Handle the error appropriately
+  Future<List<Transaction>> fetchTransactionsForCurrentUser() async {
+    String userId =
+        FirebaseAuth.instance.currentUser?.uid ?? ''; // handle null case
+    if (userId.isNotEmpty) {
+      return fetchTransactions(userId);
+    } else {
+      print('User is not authenticated');
+      throw Error();
+      // Handle case where user is not authenticated
     }
   }
 

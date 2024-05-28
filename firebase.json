@@ -1,6 +1,1 @@
-{
-  "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
-  }
-}
+{"firestore":{"rules":"firestore.rules","indexes":"firestore.indexes.json"},"flutter":{"platforms":{"android":{"default":{"projectId":"bankingapp-76a24","appId":"1:756388383425:android:27fa2559f90a86bb4ea240","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"bankingapp-76a24","configurations":{"android":"1:756388383425:android:27fa2559f90a86bb4ea240"}}}}}}

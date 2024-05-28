@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart' as fs;
-import './transaction_model.dart';
+import '../model/transaction_model.dart';
 
 class TransactionService {
   final fs.FirebaseFirestore _firestore = fs.FirebaseFirestore.instance;

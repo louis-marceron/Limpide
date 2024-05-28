@@ -1,4 +1,7 @@
+import 'package:banking_app/common_widgets/root_app_bar.dart';
+import 'package:banking_app/extensions/color_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 class ApplicationShell extends StatelessWidget {
@@ -23,15 +26,44 @@ class ApplicationShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final String currentScreenName = screensName[navigationShell.currentIndex];
+
+    final Widget transactionIcon = SvgPicture.asset('assets/transaction.svg',
+        colorFilter: ColorFilter.mode(
+          context.onSurfaceVariant,
+          BlendMode.srcIn,
+        ),
+        semanticsLabel: 'Transaction logo');
+
+    final Widget homeOutlinedIcon = SvgPicture.asset('assets/home_outlined.svg',
+        colorFilter: ColorFilter.mode(
+          context.onSurfaceVariant,
+          BlendMode.srcIn,
+        ),
+        semanticsLabel: 'Home logo');
+
     return Scaffold(
-      body: navigationShell,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: navigationShell,
+      ),
+      appBar: RootAppBar(title: currentScreenName),
       bottomNavigationBar: NavigationBar(
         destinations: <NavigationDestination>[
-          NavigationDestination(icon: Icon(Icons.home), label: 'Home'),
           NavigationDestination(
-              icon: Icon(Icons.payments), label: 'Transactions'),
+              icon: SizedBox(
+                width: 24,
+                height: 24,
+                child: homeOutlinedIcon,
+              ),
+              selectedIcon: Icon(Icons.home_filled),
+              label: screensName[0]),
           NavigationDestination(
-              icon: Icon(Icons.bar_chart), label: 'Statistics'),
+            icon: transactionIcon,
+            label: screensName[1],
+          ),
+          NavigationDestination(
+              icon: Icon(Icons.bar_chart), label: screensName[2]),
         ],
         onDestinationSelected: _goBranch,
         selectedIndex: navigationShell.currentIndex,
@@ -39,3 +71,9 @@ class ApplicationShell extends StatelessWidget {
     );
   }
 }
+
+const screensName = <String>[
+  'Home',
+  'Transactions',
+  'Statistics',
+];
