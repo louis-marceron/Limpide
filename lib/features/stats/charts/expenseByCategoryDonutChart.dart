@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-import '../../transaction/transaction_model.dart';
+import '../../transaction/model/transaction_model.dart';
 
 class ExpenseDonutChart extends StatefulWidget {
   final List<Transaction> transactions;

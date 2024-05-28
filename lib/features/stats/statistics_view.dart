@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../transaction/transaction_model.dart';
-import '../transaction/transaction_view_model.dart';
+import '../transaction/model/transaction_model.dart';
+import '../transaction/viewmodel/transaction_view_model.dart';
 import './charts/expenseByCategoryDonutChart.dart';
 
 class StatisticsView extends StatefulWidget {
