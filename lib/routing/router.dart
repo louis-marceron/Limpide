@@ -2,7 +2,7 @@ import 'package:banking_app/features/authentication/auth_selection_screen.dart';
 import 'package:banking_app/features/authentication/login_screen.dart';
 import 'package:banking_app/features/authentication/profile_screen.dart';
 import 'package:banking_app/features/authentication/register_screen.dart';
-import 'package:banking_app/features/stats/statistics_view.dart';
+import 'package:banking_app/features/stats/views/statistics_view.dart';
 import 'package:banking_app/features/transaction/view/home_view.dart';
 import 'package:banking_app/features/transaction/view/transaction_focus_view.dart';
 import 'package:banking_app/features/transaction/view/transaction_view.dart';

@@ -16,6 +16,8 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
   late List<ChartData> data;
   late String selectedCategory = '';
 
+
+
   @override
   void initState() {
     super.initState();
@@ -36,6 +38,8 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
       }
     }
 
+    print(expenseByCategory.entries);
+
     data = expenseByCategory.entries.map((entry) {
       return ChartData(category: entry.key, amount: entry.value);
     }).toList();
@@ -43,7 +47,9 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
 
   @override
   Widget build(BuildContext context) {
-    return SfCircularChart(
+    return  data.isEmpty ? Center(
+      child: Text('No expenses found for this month'),
+    ) : SfCircularChart(
       title: ChartTitle(text: 'Expenses by Category'),
       legend: Legend(isVisible: true),
       series: <CircularSeries>[

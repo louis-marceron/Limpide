@@ -1,10 +1,10 @@
-import 'package:banking_app/features/transaction/view/widget/total_balance_widget.dart';
+import 'package:banking_app/features/stats/widget/total_balance_widget.dart';
 import 'package:banking_app/features/transaction/viewmodel/transaction_view_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'widget/balance_summary_widget.dart';
+import '../../stats/widget/balance_summary_widget.dart';
 
 class HomeView extends StatelessWidget {
   final userId = FirebaseAuth.instance.currentUser!.uid;
