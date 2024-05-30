@@ -9,7 +9,6 @@ class TransactionViewModel with ChangeNotifier {
   // For caching the transactions so that we don't have to fetch them again
   bool _hasFetchedTransactions = false;
 
-  // FIXME use regular fields
   TransactionService _transactionService = TransactionService();
   TextEditingController labelController = TextEditingController();
   TextEditingController amountController = TextEditingController();
@@ -18,9 +17,46 @@ class TransactionViewModel with ChangeNotifier {
   TextEditingController categoryController = TextEditingController();
   TextEditingController dateController = TextEditingController();
 
+  TransactionViewModel() {
+    formatAmount();
+    trimLeftLabel();
+  }
+
+  // FIXME memory leak
+  void formatAmount() {
+    amountController.addListener(() {
+      String text = amountController.text;
+      int dotCount = '.'.allMatches(text).length;
+
+      if (dotCount > 1) {
+        int lastIndex = text.lastIndexOf('.');
+        String formattedText =
+            text.substring(0, lastIndex) + text.substring(lastIndex + 1);
+        amountController.value = TextEditingValue(
+          text: formattedText,
+          selection: TextSelection.collapsed(offset: formattedText.length),
+        );
+      }
+    });
+  }
+
+  void trimLeftLabel() {
+    labelController.addListener(() {
+      String text = labelController.text;
+      String trimmedText = text.trimLeft();
+
+      if (text != trimmedText) {
+        labelController.value = TextEditingValue(
+          text: trimmedText,
+          selection: TextSelection.collapsed(offset: trimmedText.length),
+        );
+      }
+    });
+  }
+
   List<Transaction> get transactions => _transactions;
 
-  Set<String> selectedTransactionType = {"Expense"};
+  Set<String> selectedTransactionType = {TransactionType.expense};
 
   List<Transaction> get recentTransactions => _transactions
       .where((transaction) =>

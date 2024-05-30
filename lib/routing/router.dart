@@ -58,12 +58,6 @@ final goRouter = GoRouter(
               ),
               routes: [
                 GoRoute(
-                  path: 'add',
-                  pageBuilder: (context, state) => NoTransitionPage(
-                    child: AddTransactionView(),
-                  ),
-                ),
-                GoRoute(
                   path: 'detail/:transactionId',
                   name: 'details',
                   builder: (context, state) => TransactionFocusView(
@@ -102,12 +96,22 @@ final goRouter = GoRouter(
       builder: (context, state) => CategoryView(),
     ),
     GoRoute(
+      path: '/add',
+      name: 'add',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        child: AddTransactionView(),
+        transitionsBuilder: subpageAnimation,
+        transitionDuration: const Duration(milliseconds: 200),
+      ),
+    ),
+    GoRoute(
       path: '/edit/:transactionId',
       name: 'edit',
       pageBuilder: (context, state) => CustomTransitionPage(
         child: EditTransactionView(
             transactionId: state.pathParameters['transactionId']),
         transitionsBuilder: subpageAnimation,
+        transitionDuration: const Duration(milliseconds: 200),
       ),
     ),
     GoRoute(
@@ -136,6 +140,7 @@ final goRouter = GoRouter(
       pageBuilder: (context, state) => CustomTransitionPage(
         child: ProfileScreen(),
         transitionsBuilder: subpageAnimation,
+        transitionDuration: const Duration(milliseconds: 200),
       ),
     ),
   ],

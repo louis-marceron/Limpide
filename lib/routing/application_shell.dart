@@ -28,19 +28,21 @@ class ApplicationShell extends StatelessWidget {
   Widget build(BuildContext context) {
     final String currentScreenName = screensName[navigationShell.currentIndex];
 
-    final Widget transactionIcon = SvgPicture.asset('assets/transaction.svg',
-        colorFilter: ColorFilter.mode(
-          context.onSurfaceVariant,
-          BlendMode.srcIn,
-        ),
-        semanticsLabel: 'Transaction logo');
+    final Widget transactionIcon = SvgPicture.asset(
+      'assets/transaction.svg',
+      colorFilter: ColorFilter.mode(
+        context.onSurfaceVariant,
+        BlendMode.srcIn,
+      ),
+    );
 
-    final Widget homeOutlinedIcon = SvgPicture.asset('assets/home_outlined.svg',
-        colorFilter: ColorFilter.mode(
-          context.onSurfaceVariant,
-          BlendMode.srcIn,
-        ),
-        semanticsLabel: 'Home logo');
+    final Widget homeOutlinedIcon = SvgPicture.asset(
+      'assets/home_outlined.svg',
+      colorFilter: ColorFilter.mode(
+        context.onSurfaceVariant,
+        BlendMode.srcIn,
+      ),
+    );
 
     return Scaffold(
       body: Padding(

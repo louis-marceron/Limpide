@@ -1,6 +1,13 @@
+class TransactionType {
+  static const String expense = "Expense";
+  static const String income = "Income";
+}
+
+const amountMaxLength = 12;
+
 class Transaction {
   final String transactionId;
-  final String type; // "credit" or "debit"
+  final String type;
   final double amount;
   final String label;
   final DateTime date;

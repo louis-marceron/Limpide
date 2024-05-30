@@ -1,4 +1,6 @@
+import 'package:banking_app/features/transaction/model/transaction_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
@@ -15,7 +17,7 @@ class AddTransactionView extends StatefulWidget {
 }
 
 class _AddTransactionViewState extends State<AddTransactionView> {
-  final _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -26,93 +28,105 @@ class _AddTransactionViewState extends State<AddTransactionView> {
         Provider.of<TransactionViewModel>(context, listen: false);
 
     // Set default transaction type to "Expense" when the widget initializes
-    transactionController.updateSelectedTransactionType({"Expense"});
+    transactionController
+        .updateSelectedTransactionType({TransactionType.expense});
 
     // Set default date to today
     transactionController.updateSelectedDate(DateTime.now());
   }
 
+  final _amountInputFormatters = [
+    FilteringTextInputFormatter.deny(' '),
+    FilteringTextInputFormatter.deny('-'),
+    FilteringTextInputFormatter(',', allow: false, replacementString: '.'),
+  ];
+
   @override
   Widget build(BuildContext context) {
     final transactionController = Provider.of<TransactionViewModel>(context);
+    final isExpense = transactionController.typeController.text == 'Expense';
 
-    //TODO use user service to get the user id
+    // TODO use user service to get the user id
     final userId = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Transaction'),
+        title: Text('New transaction'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
         child: Form(
-          // Wrap the column with Form
           key: _formKey,
           child: Column(
             children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: SegmentedButton(
+                      showSelectedIcon: false,
+                      segments: [
+                        ButtonSegment(
+                          value: TransactionType.expense,
+                          label: Text('Debit'),
+                          icon: Icon(Icons.remove),
+                        ),
+                        ButtonSegment(
+                          value: TransactionType.income,
+                          label: Text('Credit'),
+                          icon: Icon(Icons.add),
+                        ),
+                      ],
+                      selected: transactionController.selectedTransactionType,
+                      onSelectionChanged: (selected) {
+                        transactionController
+                            .updateSelectedTransactionType(selected);
+                        transactionController.notify();
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 30),
               TextFormField(
                 controller: transactionController.labelController,
+                maxLength: 64,
+                maxLengthEnforcement: MaxLengthEnforcement.enforced,
                 decoration: InputDecoration(
-                  labelText: 'Label',
+                  labelText: 'Title',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.description_outlined),
                 ),
-                validator: ValidationBuilder()
-                    .required('Label is required')
-                    .maxLength(50, 'Label can\'t be more than 50 characters')
-                    .build(),
+                validator:
+                    ValidationBuilder().required('Title is required').build(),
               ),
+              SizedBox(height: 20),
               TextFormField(
                 keyboardType: TextInputType.number,
                 controller: transactionController.amountController,
+                inputFormatters: _amountInputFormatters,
+                maxLength: amountMaxLength,
+                maxLengthEnforcement: MaxLengthEnforcement.enforced,
                 decoration: InputDecoration(
+                  prefixText: isExpense ? '-' : '',
+                  suffixText: 'PLN',
                   labelText: 'Amount',
+                  border: const OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.payments_outlined),
                 ),
                 validator: ValidationBuilder()
+                    .regExp(RegExp(r'^(?=.*[1-9]).+$'), 'Amount cannot be null')
                     .required('Amount is required')
-                    .regExp(
-                        RegExp(r'^\d+(\.\d{1,2})?$'), 'Enter a valid amount')
-                    .maxLength(10, 'Amount can\'t be more than 1,000,000,000')
                     .build(),
               ),
-              TextFormField(
-                controller: transactionController.bankNameController,
-                decoration: InputDecoration(
-                  labelText: 'Bank Name',
-                ),
-                validator: ValidationBuilder()
-                    .required('Bank Name is required')
-                    .maxLength(
-                        50, 'Bank Name can\'t be more than 50 characters')
-                    .build(),
-              ),
-              Consumer<TransactionViewModel>(
-                builder: (context, transactionController, _) {
-                  return SegmentedButton(
-                    style: SegmentedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      selectedBackgroundColor:
-                          Theme.of(context).colorScheme.primaryContainer,
-                    ),
-                    segments: [
-                      ButtonSegment(
-                        value: "Expense",
-                        label: Text('Expense'),
-                        icon: Icon(Icons.remove),
-                      ),
-                      ButtonSegment(
-                        value: "Income",
-                        label: Text('Income'),
-                        icon: Icon(Icons.add),
-                      ),
-                    ],
-                    selected: transactionController.selectedTransactionType,
-                    onSelectionChanged: (selected) {
-                      transactionController
-                          .updateSelectedTransactionType(selected);
-                      transactionController.notify();
-                    },
-                    emptySelectionAllowed: false,
-                  );
+              ElevatedButton(
+                onPressed: () {
+                  context.pushNamed('categories');
                 },
+                child: Icon(
+                  categories[transactionController.categoryController.text]
+                          ?.icon ??
+                      Icons.question_mark,
+                ),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -145,7 +159,6 @@ class _AddTransactionViewState extends State<AddTransactionView> {
                   if (_formKey.currentState!.validate()) {
                     // Check if form is valid
                     transactionController.addTransaction(userId);
-
                     InfoFloatingSnackbar.show(context, 'Transaction added');
                     context.pop();
                   }

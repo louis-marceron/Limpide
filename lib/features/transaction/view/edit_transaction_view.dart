@@ -93,12 +93,12 @@ class _EditTransactionViewState extends State<EditTransactionView> {
                           ),
                           segments: [
                             ButtonSegment(
-                              value: "Expense",
+                              value: TransactionType.expense,
                               label: Text('Expense'),
                               icon: Icon(Icons.remove),
                             ),
                             ButtonSegment(
-                              value: "Income",
+                              value: TransactionType.income,
                               label: Text('Income'),
                               icon: Icon(Icons.add),
                             ),
