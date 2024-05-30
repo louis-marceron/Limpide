@@ -4,6 +4,7 @@ import '../../transaction/model/transaction_model.dart';
 import '../../transaction/viewmodel/transaction_view_model.dart';
 import '../widget/balance_summary_widget.dart';
 import '../charts/expense_by_category_donut_chart.dart';
+import '../widget/expenses_by_category_card.dart';
 
 class MonthStatisticsView extends StatefulWidget {
   final String userId;
@@ -59,20 +60,25 @@ class _MonthStatisticsViewState extends State<MonthStatisticsView> {
                   }
                 }
 
-                return Center(
+                return SingleChildScrollView(
                   child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(0.0),
                     child: Column(
                       children: [
                         BalanceSummaryWidget(
-                          title: '',
+                          title: null,
                           income: totalIncome,
                           expenses: totalExpenses,
                         ),
+                        SizedBox(height: 16),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             TextButton.icon(
+                              style: TextButton.styleFrom(
+                                iconColor: Theme.of(context).colorScheme.primary,
+                                textStyle: TextStyle(fontSize: 16),
+                              ),
                               icon: Icon(_showGraph ? Icons.arrow_drop_down_sharp : Icons.arrow_right_sharp),
                               label: Text('Show/Hide Graph'),
                               onPressed: () {
@@ -83,7 +89,13 @@ class _MonthStatisticsViewState extends State<MonthStatisticsView> {
                             ),
                           ],
                         ),
+                        SizedBox(height: 16),
                         if (_showGraph) ExpenseDonutChart(transactions: transactions),
+                        CategoryExpenseList(
+                          userId: widget.userId,
+                          month: widget.month,
+                          year: widget.year,
+                        ),
                       ],
                     ),
                   ),
