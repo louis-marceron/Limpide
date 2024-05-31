@@ -9,39 +9,43 @@ class CategoryView extends StatelessWidget {
   Widget build(BuildContext context) {
     final transactionController = Provider.of<TransactionViewModel>(context);
 
-    //TODO Create subcategories
+    // Get the keys and sort them alphabetically
+    final sortedCategoryKeys = categories.keys.toList();
+    sortedCategoryKeys.sort((a, b) => a.compareTo(b));
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('Categories'),
+        title: Text('Change category'),
       ),
-      body: ListView.builder(
-        itemCount: categories.length,
-        itemBuilder: (context, index) {
-          final category = categories.keys.elementAt(index);
-          final iconData = categories.values.elementAt(index).icon;
+      body: Padding(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: ListView.builder(
+          itemCount: sortedCategoryKeys.length,
+          itemBuilder: (context, index) {
+            final category = sortedCategoryKeys[index];
+            final categoryDetails = categories[category]!;
+            final iconData = categoryDetails.icon;
+            final iconColor = categoryDetails.color;
 
-          return ListTile(
-            leading: Icon(iconData), // Display the icon
-            title: Text(category), // Display the text
-            onTap: () {
-              // Handle onTap event if needed
+            return ListTile(
+              leading: Icon(
+                iconData,
+                color: iconColor.withOpacity(0.7),
+              ),
+              title: Text(category),
+              onTap: () {
+                // Handle onTap event if needed
+                Provider.of<TransactionViewModel>(context, listen: false)
+                    .categoryController
+                    .text = category;
 
-              Provider.of<TransactionViewModel>(context, listen: false)
-                  .categoryController
-                  .text = category;
+                transactionController.categoryController.text = category;
 
-              transactionController.categoryController.text = category;
-
-              print("Dans le category view");
-              print(transactionController.categoryController.text);
-
-              print(category);
-
-              context.pop(category);
-            },
-            iconColor: Theme.of(context).colorScheme.primary,
-          );
-        },
+                context.pop(category);
+              },
+            );
+          },
+        ),
       ),
     );
   }

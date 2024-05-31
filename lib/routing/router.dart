@@ -8,6 +8,7 @@ import 'package:banking_app/features/transaction/view/transaction_view.dart';
 import 'package:banking_app/features/transaction/view/add_transaction_view.dart';
 import 'package:banking_app/common_widgets/mock_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -83,17 +84,13 @@ final goRouter = GoRouter(
       ],
     ),
     GoRoute(
-      path: Routes.settings,
-      pageBuilder: (context, state) => NoTransitionPage(
-        child: MockPage(
-          welcomeText: 'Settings',
-        ),
-      ),
-    ),
-    GoRoute(
       path: '/categories',
       name: 'categories',
-      builder: (context, state) => CategoryView(),
+      pageBuilder: (context, state) => CustomTransitionPage(
+        child: CategoryView(),
+        transitionsBuilder: subpageAnimation,
+        transitionDuration: const Duration(milliseconds: 200),
+      ),
     ),
     GoRoute(
       path: '/add',

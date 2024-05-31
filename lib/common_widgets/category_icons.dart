@@ -33,25 +33,31 @@ const Color refundColor = Colors.cyan;
 const Color otherColor = Colors.grey;
 
 final Map<String, Category> categories = {
-  'Groceries': Category(icon: Icons.shopping_cart, color: groceriesColor),
-  'Rent': Category(icon: Icons.home, color: rentColor),
+  'Groceries':
+      Category(icon: Icons.shopping_cart_outlined, color: groceriesColor),
+  'Rent': Category(icon: Icons.home_outlined, color: rentColor),
   'Utilities': Category(icon: Icons.lightbulb_outline, color: utilitiesColor),
-  'Entertainment': Category(icon: Icons.movie, color: entertainmentColor),
+  'Entertainment':
+      Category(icon: Icons.movie_outlined, color: entertainmentColor),
   'Transportation':
-      Category(icon: Icons.directions_bus, color: transportationColor),
-  'Health': Category(icon: Icons.local_hospital, color: healthColor),
-  'Insurance': Category(icon: Icons.security, color: insuranceColor),
-  'Education': Category(icon: Icons.school, color: educationColor),
-  'Clothing': Category(icon: Icons.shopping_bag, color: clothingColor),
-  'Gifts': Category(icon: Icons.card_giftcard, color: giftsColor),
-  'Food': Category(icon: Icons.fastfood, color: foodColor),
-  'Travel': Category(icon: Icons.flight, color: travelColor),
+      Category(icon: Icons.directions_bus_outlined, color: transportationColor),
+  'Health': Category(icon: Icons.local_hospital_outlined, color: healthColor),
+  'Insurance': Category(icon: Icons.security_outlined, color: insuranceColor),
+  'Education': Category(icon: Icons.school_outlined, color: educationColor),
+  'Clothing': Category(icon: Icons.shopping_bag_outlined, color: clothingColor),
+  'Gifts': Category(icon: Icons.card_giftcard_outlined, color: giftsColor),
+  'Food': Category(icon: Icons.fastfood_outlined, color: foodColor),
+  'Travel': Category(icon: Icons.flight_outlined, color: travelColor),
   'Investments': Category(icon: Icons.trending_up, color: investmentsColor),
-  'Savings': Category(icon: Icons.account_balance, color: savingsColor),
-  'Salary': Category(icon: Icons.work, color: salaryColor),
-  'Bonus': Category(icon: Icons.card_giftcard, color: bonusColor),
-  'Interest': Category(icon: Icons.account_balance, color: interestColor),
-  'Dividends': Category(icon: Icons.account_balance, color: dividendsColor),
-  'Refund': Category(icon: Icons.account_balance, color: refundColor),
-  'Other': Category(icon: Icons.question_mark, color: otherColor),
+  'Savings':
+      Category(icon: Icons.account_balance_outlined, color: savingsColor),
+  'Salary': Category(icon: Icons.work_outline, color: salaryColor),
+  'Bonus': Category(icon: Icons.card_giftcard_outlined, color: bonusColor),
+  'Interest':
+      Category(icon: Icons.account_balance_outlined, color: interestColor),
+  'Dividends':
+      Category(icon: Icons.account_balance_outlined, color: dividendsColor),
+  'Refund': Category(icon: Icons.account_balance_outlined, color: refundColor),
+  'Other': Category(icon: Icons.question_mark_outlined, color: otherColor),
 };
+

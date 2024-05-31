@@ -15,7 +15,7 @@ class TransactionViewModel with ChangeNotifier {
   TextEditingController typeController = TextEditingController();
   TextEditingController bankNameController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
-  TextEditingController dateController = TextEditingController();
+  TextEditingController dateTimeController = TextEditingController();
 
   TransactionViewModel() {
     formatAmount();
@@ -56,8 +56,6 @@ class TransactionViewModel with ChangeNotifier {
 
   List<Transaction> get transactions => _transactions;
 
-  Set<String> selectedTransactionType = {TransactionType.expense};
-
   List<Transaction> get recentTransactions => _transactions
       .where((transaction) =>
           transaction.date.isAfter(DateTime.now().subtract(Duration(days: 7))))
@@ -87,6 +85,7 @@ class TransactionViewModel with ChangeNotifier {
   }
 
   Future<void> addTransaction(String userId) async {
+    await Future.delayed(Duration(seconds: 3));
     print('Adding transaction');
     print('Type : ${typeController.text}');
     // Create a new Transaction object using the data from controllers
@@ -95,7 +94,7 @@ class TransactionViewModel with ChangeNotifier {
       type: typeController.text,
       amount: double.parse(amountController.text),
       label: labelController.text,
-      date: DateTime.parse(dateController.text),
+      date: DateTime.parse(dateTimeController.text),
       bankName: bankNameController.text,
       category: categoryController.text,
     );
@@ -112,7 +111,7 @@ class TransactionViewModel with ChangeNotifier {
       type: transactionController.typeController.text,
       amount: double.parse(transactionController.amountController.text),
       label: transactionController.labelController.text,
-      date: DateTime.parse(transactionController.dateController.text),
+      date: DateTime.parse(transactionController.dateTimeController.text),
       bankName: transactionController.bankNameController.text,
       category: transactionController.categoryController.text,
     );
@@ -137,8 +136,28 @@ class TransactionViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateSelectedDate(DateTime selectedDate) {
-    dateController.text = selectedDate.toIso8601String();
+  void updateSelectedDateTime(
+      {DateTime? selectedDate, TimeOfDay? selectedTime}) {
+    final previousDateTimeString = dateTimeController.text;
+    DateTime previousDateTime;
+
+    try {
+      previousDateTime = DateTime.parse(previousDateTimeString);
+    } catch (e) {
+      previousDateTime = DateTime.now();
+    }
+
+    // Create a new DateTime object with updated values
+    DateTime newDateTime = DateTime(
+      selectedDate?.year ?? previousDateTime.year,
+      selectedDate?.month ?? previousDateTime.month,
+      selectedDate?.day ?? previousDateTime.day,
+      selectedTime?.hour ?? previousDateTime.hour,
+      selectedTime?.minute ?? previousDateTime.minute,
+    );
+
+    // Update the controller with the new DateTime value in ISO 8601 format
+    dateTimeController.text = newDateTime.toIso8601String();
   }
 
   Future<Transaction?> getTransactionById(
@@ -152,7 +171,7 @@ class TransactionViewModel with ChangeNotifier {
     typeController.clear();
     bankNameController.clear();
     categoryController.clear();
-    dateController.clear();
+    dateTimeController.clear();
   }
 
   Future<double> fetchTotalBalance(String userId) async {
@@ -222,9 +241,8 @@ class TransactionViewModel with ChangeNotifier {
     return total;
   }
 
-  void updateSelectedTransactionType(Set<String> selectedType) {
-    selectedTransactionType = selectedType;
-    typeController.text = selectedType.first;
+  void updateSelectedTransactionType(String selectedType) {
+    typeController.text = selectedType;
   }
 
   void notify() {
