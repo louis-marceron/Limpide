@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:banking_app/routing/router.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'app.dart';
 import './config/firebase_options.dart';
@@ -17,6 +18,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+
+  // Load environment variables from .env file
+  await dotenv.load();
 
   // Listen for Auth changes and refresh the router
   FirebaseAuth.instance.authStateChanges().listen((User? user) {
