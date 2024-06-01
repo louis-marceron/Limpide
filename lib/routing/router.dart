@@ -2,11 +2,13 @@ import 'package:banking_app/features/authentication/auth_selection_screen.dart';
 import 'package:banking_app/features/authentication/login_screen.dart';
 import 'package:banking_app/features/authentication/profile_screen.dart';
 import 'package:banking_app/features/authentication/register_screen.dart';
+import 'package:banking_app/features/stats/views/statistics_view.dart';
 import 'package:banking_app/features/transaction/view/home_view.dart';
 import 'package:banking_app/features/transaction/view/transaction_focus_view.dart';
 import 'package:banking_app/features/transaction/view/transaction_view.dart';
 import 'package:banking_app/features/transaction/view/add_transaction_view.dart';
 import 'package:banking_app/common_widgets/mock_page.dart';
+import 'package:banking_app/features/transaction/view/transactions_by_category_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -79,9 +81,7 @@ final goRouter = GoRouter(
             GoRoute(
               path: Routes.statistics,
               pageBuilder: (context, state) => NoTransitionPage(
-                child: MockPage(
-                  welcomeText: 'Statistics',
-                ),
+                child: StatisticsView(),
               ),
             )
           ],
@@ -100,6 +100,19 @@ final goRouter = GoRouter(
       path: '/categories',
       name: 'categories',
       builder: (context, state) => CategoryView(),
+    ),
+    GoRoute(
+      path: '/expenses-by-category/:category/:month/:year/:userId',
+      name : 'expensesByCategory',
+      pageBuilder: (context, state) => NoTransitionPage(
+        //FIXME
+        child: TransactionsByCategoryView(
+          userId: state.pathParameters['userId']!,
+          category: state.pathParameters['category']!,
+          month: state.pathParameters['month']!,
+          year: state.pathParameters['year']!,
+        )
+      ),
     ),
     GoRoute(
       path: '/edit/:transactionId',
