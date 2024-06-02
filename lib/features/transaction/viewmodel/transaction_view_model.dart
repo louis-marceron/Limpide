@@ -8,6 +8,7 @@ class TransactionViewModel with ChangeNotifier {
   List<Transaction> _transactions = [];
   // For caching the transactions so that we don't have to fetch them again
   bool _hasFetchedTransactions = false;
+  bool _isFetchingTransactions = false;
 
   TransactionService _transactionService = TransactionService();
   TextEditingController labelController = TextEditingController();
@@ -62,9 +63,12 @@ class TransactionViewModel with ChangeNotifier {
       .toList();
 
   Future<List<Transaction>> fetchTransactions(String userId) async {
-    if (!_hasFetchedTransactions) {
-      // await Future.delayed(Duration(seconds: 3));
+    if (!_isFetchingTransactions && !_hasFetchedTransactions) {
+      // Prevent from doing multiple fetch when this function is called multiple
+      // time at once
+      _isFetchingTransactions = true;
       _transactions = await _transactionService.fetchTransactions(userId);
+      _isFetchingTransactions = false;
       _hasFetchedTransactions = true;
       notifyListeners();
     }
@@ -175,28 +179,34 @@ class TransactionViewModel with ChangeNotifier {
   }
 
   Future<double> fetchTotalBalance(String userId) async {
+    print('begin to fetchtotalbalance');
     await fetchTransactions(userId);
     final double total = _transactions.fold(
         0.0,
         (total, transaction) => transaction.type == 'Expense'
             ? total - transaction.amount
             : total + transaction.amount);
+    print('end to fetchtotalbalance');
     return total;
   }
 
   Future<double> fetchExpensesSinceBeginning(String userId) async {
+    print('begin to fetchexpensesincebeginning');
     await fetchTransactions(userId);
     final double total = _transactions
         .where((transaction) => transaction.type == 'Expense')
         .fold(0.0, (sum, transaction) => sum + transaction.amount);
+    print('end to fetchexpensesincebeginning');
     return total;
   }
 
   Future<double> fetchIncomeSinceBeginning(String userId) async {
+    print('begin to fetchincomsincebeginning');
     await fetchTransactions(userId);
     final double total = _transactions
         .where((transaction) => transaction.type == 'Income')
         .fold(0.0, (sum, transaction) => sum + transaction.amount);
+    print('end to fetchincomsincebeginning');
     return total;
   }
 
