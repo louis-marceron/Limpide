@@ -227,6 +227,11 @@ class TransactionViewModel with ChangeNotifier {
     return total;
   }
 
+  Future<List<Transaction>> fetchAllTransactionForMonth(String userId, int month, int year) async {
+    await fetchTransactions(userId);
+    return _transactions.where((transaction) => transaction.date.month == month && transaction.date.year == year).toList();
+  }
+
   Future<double> fetchExpensesForYear(String userId, int year) async {
     await fetchTransactions(userId); // Ensure transactions are loaded
     final double total = _transactions
@@ -247,6 +252,32 @@ class TransactionViewModel with ChangeNotifier {
 
   void updateSelectedTransactionType(String selectedType) {
     typeController.text = selectedType;
+  }
+
+  Future<Map<String, double>> fetchCategoryExpenses(String userId, int month, int year) async {
+    List<Transaction> transactions = await fetchAllTransactionForMonth(userId, month, year);
+    Map<String, double> categoryExpenses = {};
+
+    for (var transaction in transactions) {
+      if (transaction.type == 'Expense' && transaction.category != null) {
+        categoryExpenses.update(transaction.category!, (value) => value + transaction.amount,
+            ifAbsent: () => transaction.amount);
+      }
+    }
+
+    // Sort the categoryExpenses map by values (amounts) in descending order
+    var sortedEntries = categoryExpenses.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+
+    // Create a new map from the sorted entries
+    Map<String, double> sortedCategoryExpenses = Map.fromEntries(sortedEntries);
+
+    return sortedCategoryExpenses;
+  }
+
+  Future<List<Transaction>> fetchExpenseTransactionsForCategoryAndDate(String userId, String category, String month, String year) async {
+    await fetchTransactions(userId);
+    return _transactions.where((transaction) => transaction.type == 'Expense' && transaction.category == category && transaction.date.month == int.parse(month) && transaction.date.year == int.parse(year)).toList();
   }
 
   void notify() {

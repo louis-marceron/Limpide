@@ -31,7 +31,7 @@ class TransactionListWidget extends StatelessWidget {
             _groupTransactionsByTimePeriod(transactionController.transactions);
 
         return ListView.separated(
-          separatorBuilder: (costext, index) => SizedBox(height: 20),
+          separatorBuilder: (context, index) => SizedBox(height: 20),
           // Prevent FAB from hiding the last item
           padding: EdgeInsets.only(bottom: 128),
           itemCount: transactionsByDay.length,
