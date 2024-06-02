@@ -2,13 +2,13 @@ import 'package:banking_app/features/authentication/auth_selection_screen.dart';
 import 'package:banking_app/features/authentication/login_screen.dart';
 import 'package:banking_app/features/authentication/profile_screen.dart';
 import 'package:banking_app/features/authentication/register_screen.dart';
+import 'package:banking_app/features/transaction/model/transaction_model.dart';
 import 'package:banking_app/features/transaction/view/home_view.dart';
 import 'package:banking_app/features/transaction/view/transaction_focus_view.dart';
 import 'package:banking_app/features/transaction/view/transaction_view.dart';
-import 'package:banking_app/features/transaction/view/add_transaction_view.dart';
+import 'package:banking_app/features/transaction/view/transaction_form_view.dart';
 import 'package:banking_app/common_widgets/mock_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -95,11 +95,14 @@ final goRouter = GoRouter(
     GoRoute(
       path: '/add',
       name: 'add',
-      pageBuilder: (context, state) => CustomTransitionPage(
-        child: AddTransactionView(),
-        transitionsBuilder: subpageAnimation,
-        transitionDuration: const Duration(milliseconds: 200),
-      ),
+      pageBuilder: (context, state) {
+        final transaction = state.extra as Transaction?;
+        return CustomTransitionPage(
+          child: TransactionFormView(transaction: transaction),
+          transitionsBuilder: subpageAnimation,
+          transitionDuration: const Duration(milliseconds: 200),
+        );
+      },
     ),
     GoRoute(
       path: '/edit/:transactionId',

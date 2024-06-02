@@ -10,14 +10,17 @@ import '../../../common_widgets/snackbar/info_floating_snackbar.dart';
 import '../../../common_widgets/category_icons.dart';
 import 'package:banking_app/features/transaction/viewmodel/transaction_view_model.dart';
 
-class AddTransactionView extends StatefulWidget {
-  const AddTransactionView({Key? key}) : super(key: key);
+class TransactionFormView extends StatefulWidget {
+  const TransactionFormView({super.key, this.transaction});
+
+  final Transaction? transaction;
 
   @override
-  _AddTransactionViewState createState() => _AddTransactionViewState();
+  _TransactionFormViewState createState() => _TransactionFormViewState();
 }
 
-class _AddTransactionViewState extends State<AddTransactionView> {
+class _TransactionFormViewState extends State<TransactionFormView> {
+  late bool isEditing;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final ValueNotifier<bool> _isFormValid = ValueNotifier<bool>(false);
   final ValueNotifier<bool> _isLoading = ValueNotifier<bool>(false);
@@ -26,16 +29,33 @@ class _AddTransactionViewState extends State<AddTransactionView> {
   void initState() {
     super.initState();
 
+    final transaction = widget.transaction;
+    isEditing = transaction != null;
+
     // Access the transaction controller after the widget is created
     final transactionController =
         Provider.of<TransactionViewModel>(context, listen: false);
 
+    // transactionController.categoryController.addListener
+
     // Set default values
-    transactionController
-        .updateSelectedTransactionType(TransactionType.expense);
-    transactionController.updateSelectedDateTime(
-        selectedDate: DateTime.now(), selectedTime: TimeOfDay.now());
-    transactionController.categoryController.text = 'Other';
+    if (transaction != null) {
+      _isFormValid.value = true;
+      transactionController.updateSelectedTransactionType(transaction.type);
+      transactionController.dateTimeController.text =
+          transaction.date.toIso8601String();
+      transactionController.amountController.text =
+          transaction.amount.toString();
+      transactionController.labelController.text = transaction.label;
+      transactionController.categoryController.text =
+          transaction.category ?? 'Other';
+    } else {
+      transactionController
+          .updateSelectedTransactionType(TransactionType.expense);
+      transactionController.updateSelectedDateTime(
+          selectedDate: DateTime.now(), selectedTime: TimeOfDay.now());
+      transactionController.categoryController.text = 'Other';
+    }
 
     // Add listeners to text controllers for title and amount fields
     transactionController.labelController.addListener(_validateForm);
@@ -71,7 +91,7 @@ class _AddTransactionViewState extends State<AddTransactionView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('New transaction'),
+        title: Text(isEditing ? 'Edit transaction' : 'New transaction'),
       ),
       body: Padding(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
@@ -261,14 +281,29 @@ class _AddTransactionViewState extends State<AddTransactionView> {
                                           if (_formKey.currentState!
                                               .validate()) {
                                             try {
-                                              await transactionController
-                                                  .addTransaction(userId);
-                                              InfoFloatingSnackbar.show(
-                                                  context, 'Transaction added');
+                                              final transaction =
+                                                  widget.transaction;
+                                              if (transaction != null) {
+                                                await transactionController
+                                                    .updateTransaction(
+                                                        userId, transaction);
+                                                InfoFloatingSnackbar.show(
+                                                    context,
+                                                    'Transaction edited');
+                                              } else {
+                                                await transactionController
+                                                    .addTransaction(userId);
+                                                InfoFloatingSnackbar.show(
+                                                    context,
+                                                    'Transaction added');
+                                              }
                                               context.pop();
                                             } catch (e) {
-                                              InfoFloatingSnackbar.show(context,
-                                                  'Failed to add transaction');
+                                              InfoFloatingSnackbar.show(
+                                                  context,
+                                                  isEditing
+                                                      ? 'Failed to edit transaction'
+                                                      : 'Failed to add transaction');
                                             } finally {
                                               _isLoading.value = false;
                                             }
@@ -284,7 +319,9 @@ class _AddTransactionViewState extends State<AddTransactionView> {
                                             strokeWidth: 2,
                                           ),
                                         )
-                                      : Text('Add Transaction'),
+                                      : Text(isEditing
+                                          ? 'Edit transaction'
+                                          : 'Add transaction'),
                                   style: ButtonStyle(
                                     visualDensity: VisualDensity(
                                       vertical: 2,

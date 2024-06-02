@@ -10,7 +10,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-// TODO category color
 class TransactionItemWidget extends StatelessWidget {
   final Transaction transaction;
 
@@ -153,12 +152,11 @@ class TransactionItemWidget extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
+                      transactionController.resetTransaction();
                       Navigator.pop(context);
                       context.pushNamed(
-                        "edit",
-                        pathParameters: {
-                          'transactionId': transaction.transactionId
-                        },
+                        "add",
+                        extra: transaction,
                       );
                     },
                     splashColor: null,

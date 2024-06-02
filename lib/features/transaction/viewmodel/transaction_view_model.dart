@@ -85,7 +85,7 @@ class TransactionViewModel with ChangeNotifier {
   }
 
   Future<void> addTransaction(String userId) async {
-    await Future.delayed(Duration(seconds: 3));
+    // await Future.delayed(Duration(seconds: 3));
     print('Adding transaction');
     print('Type : ${typeController.text}');
     // Create a new Transaction object using the data from controllers
