@@ -179,34 +179,28 @@ class TransactionViewModel with ChangeNotifier {
   }
 
   Future<double> fetchTotalBalance(String userId) async {
-    print('begin to fetchtotalbalance');
     await fetchTransactions(userId);
     final double total = _transactions.fold(
         0.0,
         (total, transaction) => transaction.type == 'Expense'
             ? total - transaction.amount
             : total + transaction.amount);
-    print('end to fetchtotalbalance');
     return total;
   }
 
   Future<double> fetchExpensesSinceBeginning(String userId) async {
-    print('begin to fetchexpensesincebeginning');
     await fetchTransactions(userId);
     final double total = _transactions
         .where((transaction) => transaction.type == 'Expense')
         .fold(0.0, (sum, transaction) => sum + transaction.amount);
-    print('end to fetchexpensesincebeginning');
     return total;
   }
 
   Future<double> fetchIncomeSinceBeginning(String userId) async {
-    print('begin to fetchincomsincebeginning');
     await fetchTransactions(userId);
     final double total = _transactions
         .where((transaction) => transaction.type == 'Income')
         .fold(0.0, (sum, transaction) => sum + transaction.amount);
-    print('end to fetchincomsincebeginning');
     return total;
   }
 
