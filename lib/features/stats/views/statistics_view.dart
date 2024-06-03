@@ -17,6 +17,7 @@ class _StatisticsViewState extends State<StatisticsView> with SingleTickerProvid
   late int _oldestYear;
   late int _totalMonths;
   late TabController _tabController;
+  bool _isTabControllerInitialized = false;
 
   @override
   void initState() {
@@ -34,7 +35,9 @@ class _StatisticsViewState extends State<StatisticsView> with SingleTickerProvid
 
   @override
   void dispose() {
-    _tabController.dispose();
+    if (_isTabControllerInitialized) {
+      _tabController.dispose();
+    }
     super.dispose();
   }
 
@@ -52,6 +55,7 @@ class _StatisticsViewState extends State<StatisticsView> with SingleTickerProvid
           _totalMonths = (now.year - _oldestYear) * 12 + now.month - _oldestMonth + 1;
           _tabController = TabController(length: _totalMonths, vsync: this, initialIndex: _totalMonths - 1);
           _tabController.addListener(_handleTabSelection);
+          _isTabControllerInitialized = true;
         });
       }
     }
@@ -78,6 +82,14 @@ class _StatisticsViewState extends State<StatisticsView> with SingleTickerProvid
       return Scaffold(
         body: Center(
           child: Text('User not authenticated'),
+        ),
+      );
+    }
+
+    if (!_isTabControllerInitialized) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
         ),
       );
     }
