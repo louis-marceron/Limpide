@@ -1,9 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
-import 'package:banking_app/extensions/color_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:http_parser/http_parser.dart';
-import 'package:mime/mime.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:go_router/go_router.dart';
@@ -12,7 +9,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:permission_handler/permission_handler.dart';
-import '../model/ai_recognize_bill_request_model.dart';
 import '../../../common_widgets/snackbar/info_floating_snackbar.dart';
 import '../../../common_widgets/category_icons.dart';
 import 'package:banking_app/features/transaction/viewmodel/transaction_view_model.dart';
@@ -315,11 +311,11 @@ class _AddTransactionViewState extends State<AddTransactionView> {
                 ),
               ),
             ),
-            if (_isProcessing) // Show a loading indicator if processing is ongoing
+            if (_isProcessing) // Show a loading indicator if processing is ongoing and grey out the screen
               Container(
-                color: Colors.black.withOpacity(0.2), // Adjust opacity as needed
+                color: Colors.black.withOpacity(0.2),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1), // Adjust blur intensity
+                  filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
                   child: Center(
                     child: CircularProgressIndicator(),
                   ),
