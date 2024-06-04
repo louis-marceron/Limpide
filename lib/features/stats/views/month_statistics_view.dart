@@ -79,6 +79,10 @@ class _MonthStatisticsViewState extends State<MonthStatisticsView> {
                                 iconColor: Theme.of(context).colorScheme.primary,
                                 textStyle: TextStyle(fontSize: 16),
                               ),
+
+                              //How can I make that this button is changing the value for all tabs?
+
+
                               icon: Icon(_showGraph ? Icons.arrow_drop_down_sharp : Icons.arrow_right_sharp),
                               label: Text('Show/Hide Graph'),
                               onPressed: () {
