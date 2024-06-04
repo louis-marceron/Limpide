@@ -90,6 +90,6 @@ Very expensive, we need to put a paywall for this feature.
 
 ## Diagrams
 ### C4 Container diagram
-![C4 Container](doc/Limpide_C4_Container_Diagram.png)
+![C4 Container](doc/Limpide_C4_Container_Diagram.drawio.png)
 
 
