@@ -5,10 +5,8 @@ import 'package:banking_app/features/authentication/register_screen.dart';
 import 'package:banking_app/features/stats/views/statistics_view.dart';
 import 'package:banking_app/features/transaction/model/transaction_model.dart';
 import 'package:banking_app/features/transaction/view/home_view.dart';
-import 'package:banking_app/features/transaction/view/transaction_focus_view.dart';
 import 'package:banking_app/features/transaction/view/transaction_view.dart';
 import 'package:banking_app/features/transaction/view/transaction_form_view.dart';
-import 'package:banking_app/common_widgets/mock_page.dart';
 import 'package:banking_app/features/transaction/view/transactions_by_category_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +14,6 @@ import 'package:go_router/go_router.dart';
 
 import '../constants/routes.dart';
 import '../features/transaction/view/category_view.dart';
-import '../features/transaction/view/edit_transaction_view.dart';
 import './application_shell.dart';
 
 // I don't really understand the purpose of the keys
@@ -59,14 +56,6 @@ final goRouter = GoRouter(
               pageBuilder: (context, state) => NoTransitionPage(
                 child: TransactionsView(),
               ),
-              routes: [
-                GoRoute(
-                  path: 'detail/:transactionId',
-                  name: 'details',
-                  builder: (context, state) => TransactionFocusView(
-                      transactionId: state.pathParameters['transactionId']),
-                ),
-              ],
             ),
           ],
         ),
@@ -115,16 +104,6 @@ final goRouter = GoRouter(
           month: state.pathParameters['month']!,
           year: state.pathParameters['year']!,
         )
-      ),
-    ),
-    GoRoute(
-      path: '/edit/:transactionId',
-      name: 'edit',
-      pageBuilder: (context, state) => CustomTransitionPage(
-        child: EditTransactionView(
-            transactionId: state.pathParameters['transactionId']),
-        transitionsBuilder: subpageAnimation,
-        transitionDuration: const Duration(milliseconds: 200),
       ),
     ),
     GoRoute(
