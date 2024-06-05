@@ -76,7 +76,7 @@ If a user makes 47.25 transactions per month (with 6 transactions of 30
 products), the monthly disk resources consumption will be 41.3 KB.
 
 Cost of the openai vision api with the gtp-4o model  :
-// 1k tokens = 1k tokens of input and 1k tokens of output
+1k tokens = 1k tokens of input and 1k tokens of output
 Input : $0.005 / 1K tokens
 Output : $0.015 / 1K tokens
 Max token for one picture : 300
