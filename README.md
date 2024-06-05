@@ -91,3 +91,6 @@ Very expensive, we need to put a paywall for this feature.
 ![C4 Container](doc/Limpide_C4_Container_Diagram.drawio.png)
 
 
+### Code Architecture
+![MVVM Architecture](doc/Mvvm.png)
+source : http://www.plainionist.net/Mvvm-Dialogs/
