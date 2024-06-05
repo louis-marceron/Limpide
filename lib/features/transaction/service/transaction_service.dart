@@ -44,16 +44,12 @@ class TransactionService {
   }
 
   Future<void> addTransaction(String userId, Transaction transaction) async {
-    try {
-      await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('transactions')
-          .doc(transaction.transactionId)
-          .set(transaction.toJson());
-    } catch (e) {
-      print(e); // TODO Handle the error appropriately
-    }
+    await _firestore
+        .collection('users')
+        .doc(userId)
+        .collection('transactions')
+        .doc(transaction.transactionId)
+        .set(transaction.toJson());
   }
 
   Future<void> updateTransaction(String userId, Transaction transaction) async {

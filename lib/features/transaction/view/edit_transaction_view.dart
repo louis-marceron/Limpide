@@ -60,7 +60,7 @@ class _EditTransactionViewState extends State<EditTransactionView> {
                 _transactionController.typeController.text = _transaction!.type;
                 _transactionController.bankNameController.text =
                     _transaction!.bankName;
-                _transactionController.dateController.text =
+                _transactionController.dateTimeController.text =
                     _transaction!.date.toString();
               }
 
@@ -93,21 +93,20 @@ class _EditTransactionViewState extends State<EditTransactionView> {
                           ),
                           segments: [
                             ButtonSegment(
-                              value: "Expense",
+                              value: TransactionType.expense,
                               label: Text('Expense'),
                               icon: Icon(Icons.remove),
                             ),
                             ButtonSegment(
-                              value: "Income",
+                              value: TransactionType.income,
                               label: Text('Income'),
                               icon: Icon(Icons.add),
                             ),
                           ],
-                          selected:
-                              transactionController.selectedTransactionType,
+                          selected: {transactionController.typeController.text},
                           onSelectionChanged: (selected) {
                             transactionController
-                                .updateSelectedTransactionType(selected);
+                                .updateSelectedTransactionType(selected.first);
                             transactionController.notify();
                           },
                           emptySelectionAllowed: false,
@@ -143,9 +142,9 @@ class _EditTransactionViewState extends State<EditTransactionView> {
                         final selectedDate = await showDatePicker(
                           context: context,
                           initialDate: _transactionController
-                                  .dateController.text.isNotEmpty
+                                  .dateTimeController.text.isNotEmpty
                               ? DateTime.tryParse(_transactionController
-                                      .dateController.text) ??
+                                      .dateTimeController.text) ??
                                   DateTime.now()
                               : DateTime.now(),
                           firstDate: DateTime(DateTime.now().year - 1),
@@ -155,8 +154,8 @@ class _EditTransactionViewState extends State<EditTransactionView> {
                         // Update selected date in ViewModel
                         if (selectedDate != null) {
                           print('Selected date: $selectedDate');
-                          _transactionController
-                              .updateSelectedDate(selectedDate);
+                          _transactionController.updateSelectedDateTime(
+                              selectedDate: selectedDate);
                         } else {
                           print('No date selected');
                         }

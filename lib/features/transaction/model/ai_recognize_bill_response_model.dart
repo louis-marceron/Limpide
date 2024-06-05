@@ -1,7 +1,7 @@
 import 'package:intl/intl.dart';
 
 class OpenAiResponse {
-  final String amount;
+  final String amount; //double
   final String merchantName;
   final String category;
   final String date; //DateTime

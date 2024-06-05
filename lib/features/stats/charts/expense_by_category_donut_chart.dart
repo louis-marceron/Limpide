@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../transaction/model/transaction_model.dart';
 import '../../../common_widgets/category_icons.dart';
+import 'package:flutter/scheduler.dart'; // Add this import
 
 class ExpenseDonutChart extends StatefulWidget {
   final List<Transaction> transactions;
 
-  const ExpenseDonutChart({Key? key, required this.transactions}) : super(key: key);
+  const ExpenseDonutChart({
+    Key? key,
+    required this.transactions,
+  }) : super(key: key);
 
   @override
   _ExpenseDonutChartState createState() => _ExpenseDonutChartState();
@@ -25,7 +29,6 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
   void updateChartData() {
     final expenseByCategory = <String, double>{};
 
-    // Calculate total expenses by category
     for (var transaction in widget.transactions) {
       if (transaction.type == 'Expense') {
         expenseByCategory.update(
@@ -43,6 +46,8 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
 
   @override
   Widget build(BuildContext context) {
+    print('Building ExpenseDonutChart');
+
     return data.isEmpty
         ? Center(
       child: Text('No expenses found for this month'),
@@ -61,6 +66,7 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
             isVisible: true,
             labelPosition: ChartDataLabelPosition.outside,
           ),
+          animationDuration: 500,
         ),
       ],
     );

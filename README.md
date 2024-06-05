@@ -1,11 +1,9 @@
 # Personnal finances tracker application
 
 ## Functionnal requirements
-- Offline and online mode
 - CRUD on online profile
 - CRUD on transactions
-  - Manually add a transaction
-  - Hide (ignore) some transactions fetched from a bank API
+  - Manually handle transactiond
 - Automatic fetching of transactions from a bank API
 - Data visualization
 - Create financial goals **optional**
@@ -30,6 +28,7 @@ erDiagram
 USERS {
   string userId
   string email
+  string password
 }
 USERS ||--o{ TRANSACTIONS: has
 
@@ -44,11 +43,12 @@ TRANSACTIONS {
 }
 ```
 
+```json
 {
   "User": {
     "userId": "Unique identifier for the user",
-    "name": "User's name",
     "email": "User's email",
+    "password": "User's password",
     "transactions": [
       {
         "transactionId": "Unique identifier for the transaction",
@@ -57,27 +57,12 @@ TRANSACTIONS {
         "date": "Transaction date",
         "category": "Transaction category",
         "label": "A descriptive label for the transaction",
-        "origin": {
-          "type": "manual/bank",
-          "bankName": "Name of the bank if the origin is a bank"
-        },
-        "details": {
-          "products": [
-            {
-              "productName": "Name of the product",
-              "productNameTranslated": "Translated name of the product",
-              "quantity": "Product quantity",
-              "price": "Product price",
-              "category": "Product category"
-            },
-            // More products
-          ]
-        }
-      },
-      // More transactions
+        "bankName": "Name of the bank if the origin is a bank"
+      }
     ]
   }
 }
+```
 
 ## Estimation of monthly resources consumption for 1 user
 https://www.statista.com/statistics/893459/average-number-of-transactions-per-person-per-day-by-method/
@@ -88,7 +73,24 @@ Size of a transaction with 30 products: 3790 bytes\
 If a user makes 47.25 transactions per month (with 6 transactions of 30 
 products), the monthly disk resources consumption will be 41.3 KB.
 
-## Estimation of monthly resources consumption for 100 000 users
-Monthly disk resources consumption for 1 user: 41.3 KB\
-Monthly disk resources consumption for 100 000 users: 4.13 GB\
-If each user makes 100 reads and 100 writes per month, the monthly\ 
+Cost of the openai vision api with the gtp-4o model \
+1k tokens = 1k tokens of input and 1k tokens of output \
+Input : 0.005 $ / 1K tokens \
+Output : 0.015 $ / 1K tokens \
+Max token for one picture : 300 \
+Cost for one picture : 0.005 + 0.015 = 0.02 / 3.33 = 0.006 $ 
+
+For 1 picture per day : 0.006 * 30 = 0.18 $ / month
+
+For 10k users : 1800 $ 
+
+Very expensive, we need to put a paywall for this feature. 
+
+## Diagrams
+### C4 Container diagram
+![C4 Container](doc/Limpide_C4_Container_Diagram.drawio.png)
+
+
+### Code Architecture
+![MVVM Architecture](doc/Mvvm.png)\
+source : http://www.plainionist.net/Mvvm-Dialogs/

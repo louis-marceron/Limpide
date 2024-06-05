@@ -8,19 +8,54 @@ class TransactionViewModel with ChangeNotifier {
   List<Transaction> _transactions = [];
   // For caching the transactions so that we don't have to fetch them again
   bool _hasFetchedTransactions = false;
+  bool _isFetchingTransactions = false;
 
-  // FIXME use regular fields
   TransactionService _transactionService = TransactionService();
   TextEditingController labelController = TextEditingController();
   TextEditingController amountController = TextEditingController();
   TextEditingController typeController = TextEditingController();
   TextEditingController bankNameController = TextEditingController();
   TextEditingController categoryController = TextEditingController();
-  TextEditingController dateController = TextEditingController();
+  TextEditingController dateTimeController = TextEditingController();
+
+  TransactionViewModel() {
+    formatAmount();
+    trimLeftLabel();
+  }
+
+  // FIXME memory leak
+  void formatAmount() {
+    amountController.addListener(() {
+      String text = amountController.text;
+      int dotCount = '.'.allMatches(text).length;
+
+      if (dotCount > 1) {
+        int lastIndex = text.lastIndexOf('.');
+        String formattedText =
+            text.substring(0, lastIndex) + text.substring(lastIndex + 1);
+        amountController.value = TextEditingValue(
+          text: formattedText,
+          selection: TextSelection.collapsed(offset: formattedText.length),
+        );
+      }
+    });
+  }
+
+  void trimLeftLabel() {
+    labelController.addListener(() {
+      String text = labelController.text;
+      String trimmedText = text.trimLeft();
+
+      if (text != trimmedText) {
+        labelController.value = TextEditingValue(
+          text: trimmedText,
+          selection: TextSelection.collapsed(offset: trimmedText.length),
+        );
+      }
+    });
+  }
 
   List<Transaction> get transactions => _transactions;
-
-  Set<String> selectedTransactionType = {"Expense"};
 
   List<Transaction> get recentTransactions => _transactions
       .where((transaction) =>
@@ -28,9 +63,12 @@ class TransactionViewModel with ChangeNotifier {
       .toList();
 
   Future<List<Transaction>> fetchTransactions(String userId) async {
-    if (!_hasFetchedTransactions) {
-      // await Future.delayed(Duration(seconds: 3));
+    if (!_isFetchingTransactions && !_hasFetchedTransactions) {
+      // Prevent from doing multiple fetch when this function is called multiple
+      // time at once
+      _isFetchingTransactions = true;
       _transactions = await _transactionService.fetchTransactions(userId);
+      _isFetchingTransactions = false;
       _hasFetchedTransactions = true;
       notifyListeners();
     }
@@ -51,6 +89,7 @@ class TransactionViewModel with ChangeNotifier {
   }
 
   Future<void> addTransaction(String userId) async {
+    // await Future.delayed(Duration(seconds: 3));
     print('Adding transaction');
     print('Type : ${typeController.text}');
     // Create a new Transaction object using the data from controllers
@@ -59,7 +98,7 @@ class TransactionViewModel with ChangeNotifier {
       type: typeController.text,
       amount: double.parse(amountController.text),
       label: labelController.text,
-      date: DateTime.parse(dateController.text),
+      date: DateTime.parse(dateTimeController.text),
       bankName: bankNameController.text,
       category: categoryController.text,
     );
@@ -76,7 +115,7 @@ class TransactionViewModel with ChangeNotifier {
       type: transactionController.typeController.text,
       amount: double.parse(transactionController.amountController.text),
       label: transactionController.labelController.text,
-      date: DateTime.parse(transactionController.dateController.text),
+      date: DateTime.parse(transactionController.dateTimeController.text),
       bankName: transactionController.bankNameController.text,
       category: transactionController.categoryController.text,
     );
@@ -101,8 +140,28 @@ class TransactionViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateSelectedDate(DateTime selectedDate) {
-    dateController.text = selectedDate.toIso8601String();
+  void updateSelectedDateTime(
+      {DateTime? selectedDate, TimeOfDay? selectedTime}) {
+    final previousDateTimeString = dateTimeController.text;
+    DateTime previousDateTime;
+
+    try {
+      previousDateTime = DateTime.parse(previousDateTimeString);
+    } catch (e) {
+      previousDateTime = DateTime.now();
+    }
+
+    // Create a new DateTime object with updated values
+    DateTime newDateTime = DateTime(
+      selectedDate?.year ?? previousDateTime.year,
+      selectedDate?.month ?? previousDateTime.month,
+      selectedDate?.day ?? previousDateTime.day,
+      selectedTime?.hour ?? previousDateTime.hour,
+      selectedTime?.minute ?? previousDateTime.minute,
+    );
+
+    // Update the controller with the new DateTime value in ISO 8601 format
+    dateTimeController.text = newDateTime.toIso8601String();
   }
 
   Future<Transaction?> getTransactionById(
@@ -116,7 +175,7 @@ class TransactionViewModel with ChangeNotifier {
     typeController.clear();
     bankNameController.clear();
     categoryController.clear();
-    dateController.clear();
+    dateTimeController.clear();
   }
 
   Future<double> fetchTotalBalance(String userId) async {
@@ -191,6 +250,10 @@ class TransactionViewModel with ChangeNotifier {
     return total;
   }
 
+  void updateSelectedTransactionType(String selectedType) {
+    typeController.text = selectedType;
+  }
+
   Future<Map<String, double>> fetchCategoryExpenses(String userId, int month, int year) async {
     List<Transaction> transactions = await fetchAllTransactionForMonth(userId, month, year);
     Map<String, double> categoryExpenses = {};
@@ -215,12 +278,6 @@ class TransactionViewModel with ChangeNotifier {
   Future<List<Transaction>> fetchExpenseTransactionsForCategoryAndDate(String userId, String category, String month, String year) async {
     await fetchTransactions(userId);
     return _transactions.where((transaction) => transaction.type == 'Expense' && transaction.category == category && transaction.date.month == int.parse(month) && transaction.date.year == int.parse(year)).toList();
-  }
-
-
-  void updateSelectedTransactionType(Set<String> selectedType) {
-    selectedTransactionType = selectedType;
-    typeController.text = selectedType.first;
   }
 
   void notify() {

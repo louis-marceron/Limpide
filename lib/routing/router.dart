@@ -3,10 +3,11 @@ import 'package:banking_app/features/authentication/login_screen.dart';
 import 'package:banking_app/features/authentication/profile_screen.dart';
 import 'package:banking_app/features/authentication/register_screen.dart';
 import 'package:banking_app/features/stats/views/statistics_view.dart';
+import 'package:banking_app/features/transaction/model/transaction_model.dart';
 import 'package:banking_app/features/transaction/view/home_view.dart';
 import 'package:banking_app/features/transaction/view/transaction_focus_view.dart';
 import 'package:banking_app/features/transaction/view/transaction_view.dart';
-import 'package:banking_app/features/transaction/view/add_transaction_view.dart';
+import 'package:banking_app/features/transaction/view/transaction_form_view.dart';
 import 'package:banking_app/common_widgets/mock_page.dart';
 import 'package:banking_app/features/transaction/view/transactions_by_category_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -60,12 +61,6 @@ final goRouter = GoRouter(
               ),
               routes: [
                 GoRoute(
-                  path: 'add',
-                  pageBuilder: (context, state) => NoTransitionPage(
-                    child: AddTransactionView(),
-                  ),
-                ),
-                GoRoute(
                   path: 'detail/:transactionId',
                   name: 'details',
                   builder: (context, state) => TransactionFocusView(
@@ -89,17 +84,25 @@ final goRouter = GoRouter(
       ],
     ),
     GoRoute(
-      path: Routes.settings,
-      pageBuilder: (context, state) => NoTransitionPage(
-        child: MockPage(
-          welcomeText: 'Settings',
-        ),
+      path: '/categories',
+      name: 'categories',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        child: CategoryView(),
+        transitionsBuilder: subpageAnimation,
+        transitionDuration: const Duration(milliseconds: 200),
       ),
     ),
     GoRoute(
-      path: '/categories',
-      name: 'categories',
-      builder: (context, state) => CategoryView(),
+      path: '/add',
+      name: 'add',
+      pageBuilder: (context, state) {
+        final transaction = state.extra as Transaction?;
+        return CustomTransitionPage(
+          child: TransactionFormView(transaction: transaction),
+          transitionsBuilder: subpageAnimation,
+          transitionDuration: const Duration(milliseconds: 200),
+        );
+      },
     ),
     GoRoute(
       path: '/expenses-by-category/:category/:month/:year/:userId',
@@ -121,6 +124,7 @@ final goRouter = GoRouter(
         child: EditTransactionView(
             transactionId: state.pathParameters['transactionId']),
         transitionsBuilder: subpageAnimation,
+        transitionDuration: const Duration(milliseconds: 200),
       ),
     ),
     GoRoute(
@@ -149,6 +153,7 @@ final goRouter = GoRouter(
       pageBuilder: (context, state) => CustomTransitionPage(
         child: ProfileScreen(),
         transitionsBuilder: subpageAnimation,
+        transitionDuration: const Duration(milliseconds: 200),
       ),
     ),
   ],

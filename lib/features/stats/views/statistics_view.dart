@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart'; // Add this import
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../transaction/viewmodel/transaction_view_model.dart';
@@ -17,6 +18,8 @@ class _StatisticsViewState extends State<StatisticsView> with SingleTickerProvid
   late int _oldestYear;
   late int _totalMonths;
   late TabController _tabController;
+  bool _isTabControllerInitialized = false;
+  bool _showGraph = true;
 
   @override
   void initState() {
@@ -34,7 +37,9 @@ class _StatisticsViewState extends State<StatisticsView> with SingleTickerProvid
 
   @override
   void dispose() {
-    _tabController.dispose();
+    if (_isTabControllerInitialized) {
+      _tabController.dispose();
+    }
     super.dispose();
   }
 
@@ -52,6 +57,7 @@ class _StatisticsViewState extends State<StatisticsView> with SingleTickerProvid
           _totalMonths = (now.year - _oldestYear) * 12 + now.month - _oldestMonth + 1;
           _tabController = TabController(length: _totalMonths, vsync: this, initialIndex: _totalMonths - 1);
           _tabController.addListener(_handleTabSelection);
+          _isTabControllerInitialized = true;
         });
       }
     }
@@ -70,6 +76,13 @@ class _StatisticsViewState extends State<StatisticsView> with SingleTickerProvid
     }
   }
 
+  void _toggleShowGraph() {
+    setState(() {
+      _showGraph = !_showGraph;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final userId = FirebaseAuth.instance.currentUser?.uid;
@@ -78,6 +91,14 @@ class _StatisticsViewState extends State<StatisticsView> with SingleTickerProvid
       return Scaffold(
         body: Center(
           child: Text('User not authenticated'),
+        ),
+      );
+    }
+
+    if (!_isTabControllerInitialized) {
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
         ),
       );
     }
@@ -117,6 +138,8 @@ class _StatisticsViewState extends State<StatisticsView> with SingleTickerProvid
               userId: userId,
               month: monthYear.month,
               year: monthYear.year,
+              showGraph: _showGraph,
+              toggleShowGraph: _toggleShowGraph,
             );
           }),
         ),

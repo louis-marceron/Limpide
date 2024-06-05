@@ -42,10 +42,10 @@ class _TransactionsViewState extends State<TransactionsView> {
         onPressed: () {
           // Reset transaction and navigate to add transaction screen
           transactionVM.resetTransaction();
-          context.push('/transactions/add');
+          context.push('/add');
         },
         child: Icon(Icons.add),
-        tooltip: 'Add Transaction',
+        tooltip: 'New transaction',
       ),
     );
   }

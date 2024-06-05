@@ -10,7 +10,6 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
-// TODO category color
 class TransactionItemWidget extends StatelessWidget {
   final Transaction transaction;
 
@@ -28,10 +27,12 @@ class TransactionItemWidget extends StatelessWidget {
     final colorFilter =
         categories[transaction.category]?.color ?? Colors.transparent;
     // Format amount to 2 decimal places
-    final String amount = transaction.amount.toStringAsFixed(2);
-    final Color amountColor =
-        transaction.amount > 0 ? context.green : context.onSurface;
-    final double amountBackgroundOpacity = transaction.amount > 0 ? 0.06 : 0.0;
+    final bool isIncome = transaction.type == 'Income';
+    final String amount = isIncome
+        ? transaction.amount.toStringAsFixed(2)
+        : '- ' + transaction.amount.toStringAsFixed(2);
+    final Color amountColor = isIncome ? context.green : context.onSurface;
+    final double amountBackgroundOpacity = isIncome ? 0.06 : 0.0;
 
     // FIXMe - this should not happen
     if (userId == null) {
@@ -153,12 +154,11 @@ class TransactionItemWidget extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
+                      transactionController.resetTransaction();
                       Navigator.pop(context);
                       context.pushNamed(
-                        "edit",
-                        pathParameters: {
-                          'transactionId': transaction.transactionId
-                        },
+                        "add",
+                        extra: transaction,
                       );
                     },
                     splashColor: null,
