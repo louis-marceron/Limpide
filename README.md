@@ -1,11 +1,9 @@
 # Personnal finances tracker application
 
 ## Functionnal requirements
-- Offline and online mode
 - CRUD on online profile
 - CRUD on transactions
-  - Manually add a transaction
-  - Hide (ignore) some transactions fetched from a bank API
+  - Manually handle transactiond
 - Automatic fetching of transactions from a bank API
 - Data visualization
 - Create financial goals **optional**
@@ -75,18 +73,18 @@ Size of a transaction with 30 products: 3790 bytes\
 If a user makes 47.25 transactions per month (with 6 transactions of 30 
 products), the monthly disk resources consumption will be 41.3 KB.
 
-Cost of the openai vision api with the gtp-4o model  :
-1k tokens = 1k tokens of input and 1k tokens of output
-Input : $0.005 / 1K tokens
-Output : $0.015 / 1K tokens
-Max token for one picture : 300
-Cost for one picture : 0.005 + 0.015 = 0.02 / 3.33 = 0.006 $
+Cost of the openai vision api with the gtp-4o model \
+1k tokens = 1k tokens of input and 1k tokens of output \
+Input : 0.005 $ / 1K tokens \
+Output : 0.015 $ / 1K tokens \
+Max token for one picture : 300 \
+Cost for one picture : 0.005 + 0.015 = 0.02 / 3.33 = 0.006 $ 
 
 For 1 picture per day : 0.006 * 30 = 0.18 $ / month
 
-For 10k users : 1800 $
+For 10k users : 1800 $ 
 
-Very expensive, we need to put a paywall for this feature.
+Very expensive, we need to put a paywall for this feature. 
 
 ## Diagrams
 ### C4 Container diagram
