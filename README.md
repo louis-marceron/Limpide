@@ -92,5 +92,5 @@ Very expensive, we need to put a paywall for this feature.
 
 
 ### Code Architecture
-![MVVM Architecture](doc/Mvvm.png)
+![MVVM Architecture](doc/Mvvm.png)\
 source : http://www.plainionist.net/Mvvm-Dialogs/
