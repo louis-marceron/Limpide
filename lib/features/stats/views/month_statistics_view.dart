@@ -10,11 +10,15 @@ class MonthStatisticsView extends StatefulWidget {
   final String userId;
   final int month;
   final int year;
+  final bool showGraph;
+  final VoidCallback toggleShowGraph;
 
   MonthStatisticsView({
     required this.userId,
     required this.month,
     required this.year,
+    required this.showGraph,
+    required this.toggleShowGraph,
   });
 
   @override
@@ -22,8 +26,6 @@ class MonthStatisticsView extends StatefulWidget {
 }
 
 class _MonthStatisticsViewState extends State<MonthStatisticsView> {
-  bool _showGraph = true;
-
   @override
   Widget build(BuildContext context) {
     final transactionController = Provider.of<TransactionViewModel>(context);
@@ -79,18 +81,17 @@ class _MonthStatisticsViewState extends State<MonthStatisticsView> {
                                 iconColor: Theme.of(context).colorScheme.primary,
                                 textStyle: TextStyle(fontSize: 16),
                               ),
-                              icon: Icon(_showGraph ? Icons.arrow_drop_down_sharp : Icons.arrow_right_sharp),
+                              icon: Icon(widget.showGraph ? Icons.arrow_drop_down_sharp : Icons.arrow_right_sharp),
                               label: Text('Show/Hide Graph'),
-                              onPressed: () {
-                                setState(() {
-                                  _showGraph = !_showGraph;
-                                });
-                              },
+                              onPressed: widget.toggleShowGraph,
                             ),
                           ],
                         ),
                         SizedBox(height: 16),
-                        if (_showGraph) ExpenseDonutChart(transactions: transactions),
+                        if (widget.showGraph)
+                          ExpenseDonutChart(
+                            transactions: transactions,
+                          ),
                         CategoryExpenseList(
                           userId: widget.userId,
                           month: widget.month,
