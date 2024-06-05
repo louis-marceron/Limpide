@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart'; // Add this import
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../transaction/viewmodel/transaction_view_model.dart';
@@ -18,6 +19,7 @@ class _StatisticsViewState extends State<StatisticsView> with SingleTickerProvid
   late int _totalMonths;
   late TabController _tabController;
   bool _isTabControllerInitialized = false;
+  bool _showGraph = true;
 
   @override
   void initState() {
@@ -74,6 +76,13 @@ class _StatisticsViewState extends State<StatisticsView> with SingleTickerProvid
     }
   }
 
+  void _toggleShowGraph() {
+    setState(() {
+      _showGraph = !_showGraph;
+    });
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final userId = FirebaseAuth.instance.currentUser?.uid;
@@ -129,6 +138,8 @@ class _StatisticsViewState extends State<StatisticsView> with SingleTickerProvid
               userId: userId,
               month: monthYear.month,
               year: monthYear.year,
+              showGraph: _showGraph,
+              toggleShowGraph: _toggleShowGraph,
             );
           }),
         ),
