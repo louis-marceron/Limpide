@@ -99,7 +99,7 @@ class _TransactionFormViewState extends State<TransactionFormView> {
   Future<void> _pickImage() async {
     final status = await Permission.camera.request();
     if (status.isGranted) {
-      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+      final pickedFile = await picker.pickImage(source: ImageSource.camera);
 
       setState(() {
         if (pickedFile != null) {
@@ -156,18 +156,19 @@ class _TransactionFormViewState extends State<TransactionFormView> {
                       'For label : Carefully analyze the bill to identify the merchant name, considering different layouts and potential abbreviations. Look for names associated with store chains, addresses, or specific locations mentioned on the bill. If a clear and specific merchant name is found, use it. Keep in mind that the bill might be in languages other than English.\n\n'
                       'For the merchant name: put null'
                       'For categories, use "Miscellaneous" if unsure (you can infer the category from the merchant name).\n\n'
-                      'Categories: Groceries, Electronics, Clothing, Restaurant, Entertainment, Transportation, Health, Miscellaneous',
+                      'Categories: Groceries, Rent, Utilities, Entertainment, Transportation, Health, Insurance, Education, Clothing, Gifts, Food, Travel, Investments, Savings, Salary, Bonus, Interest, Dividends, Refund, Other',
                 },
                 {
                   "type": "image_url",
                   "image_url": {
                     "url":'data:image/jpeg;base64,$base64Image',
+                    "detail":"high"
                   }
                 }
               ]
             }
           ],
-          'max_tokens': 300,
+          'max_tokens': 1000,
         }),
       );
 
