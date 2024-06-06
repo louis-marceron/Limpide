@@ -41,14 +41,16 @@ class _MonthStatisticsViewState extends State<MonthStatisticsView> {
           return Center(child: Text('No balance data found'));
         } else {
           return FutureBuilder<List<Transaction>>(
-            future: transactionController.fetchAllTransactionForMonth(widget.userId, widget.month, widget.year),
+            future: transactionController.fetchAllTransactionForMonth(
+                widget.userId, widget.month, widget.year),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error fetching transactions'));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Center(child: Text('No transactions found for this month'));
+                return Center(
+                    child: Text('No transactions found for this month'));
               } else {
                 final transactions = snapshot.data!;
 
@@ -78,10 +80,13 @@ class _MonthStatisticsViewState extends State<MonthStatisticsView> {
                           children: [
                             TextButton.icon(
                               style: TextButton.styleFrom(
-                                iconColor: Theme.of(context).colorScheme.primary,
+                                iconColor:
+                                    Theme.of(context).colorScheme.primary,
                                 textStyle: TextStyle(fontSize: 16),
                               ),
-                              icon: Icon(widget.showGraph ? Icons.arrow_drop_down_sharp : Icons.arrow_right_sharp),
+                              icon: Icon(widget.showGraph
+                                  ? Icons.arrow_drop_down_sharp
+                                  : Icons.arrow_right_sharp),
                               label: Text('Show/Hide Graph'),
                               onPressed: widget.toggleShowGraph,
                             ),
@@ -109,3 +114,4 @@ class _MonthStatisticsViewState extends State<MonthStatisticsView> {
     );
   }
 }
+

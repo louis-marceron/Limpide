@@ -33,7 +33,7 @@ class TransactionListWidget extends StatelessWidget {
         return ListView.separated(
           separatorBuilder: (context, index) => SizedBox(height: 20),
           // Prevent FAB from hiding the last item
-          padding: EdgeInsets.only(bottom: 128),
+          padding: EdgeInsets.only(bottom: 128, top: 8),
           itemCount: transactionsByDay.length,
           itemBuilder: (context, index) {
             final dayTransactions = transactionsByDay[index];

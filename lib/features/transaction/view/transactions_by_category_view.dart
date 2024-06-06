@@ -18,10 +18,12 @@ class TransactionsByCategoryView extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _TransactionsByCategoryViewState createState() => _TransactionsByCategoryViewState();
+  _TransactionsByCategoryViewState createState() =>
+      _TransactionsByCategoryViewState();
 }
 
-class _TransactionsByCategoryViewState extends State<TransactionsByCategoryView> {
+class _TransactionsByCategoryViewState
+    extends State<TransactionsByCategoryView> {
   late TransactionViewModel transactionVM;
   late Future<void> transactionsFuture;
 
@@ -29,14 +31,17 @@ class _TransactionsByCategoryViewState extends State<TransactionsByCategoryView>
   void initState() {
     super.initState();
     transactionVM = Provider.of<TransactionViewModel>(context, listen: false);
-    transactionsFuture = transactionVM.fetchExpenseTransactionsForCategoryAndDate(widget.userId, widget.category, widget.month, widget.year);
+    transactionsFuture =
+        transactionVM.fetchExpenseTransactionsForCategoryAndDate(
+            widget.userId, widget.category, widget.month, widget.year);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('${widget.category} Transactions'), // Display category in the app bar title
+        title: Text(
+            '${widget.category} Transactions'), // Display category in the app bar title
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0), // Add padding around the content

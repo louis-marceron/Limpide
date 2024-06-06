@@ -33,7 +33,7 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
       if (transaction.type == 'Expense') {
         expenseByCategory.update(
           transaction.category!,
-              (value) => value + transaction.amount,
+          (value) => value + transaction.amount,
           ifAbsent: () => transaction.amount,
         );
       }
@@ -50,8 +50,8 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
 
     return data.isEmpty
         ? Center(
-      child: Text('No expenses found for this month'),
-    )
+            child: Text('No expenses found for this month'),
+          )
         : SfCircularChart(
       title: ChartTitle(text: 'Expenses by Category'),
       legend: Legend(isVisible: true),

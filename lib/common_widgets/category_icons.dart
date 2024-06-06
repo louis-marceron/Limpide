@@ -60,4 +60,3 @@ final Map<String, Category> categories = {
   'Refund': Category(icon: Icons.account_balance_outlined, color: refundColor),
   'Other': Category(icon: Icons.question_mark_outlined, color: otherColor),
 };
-

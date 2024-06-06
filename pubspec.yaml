@@ -21,7 +21,8 @@ dependencies:
   provider: ^6.1.2
   syncfusion_flutter_charts: ^25.2.5
   uuid: ^4.4.0
-  form_validator: ">=0.1.1 <2.0.0"
+  form_validator: ^2.1.1
+  overflow_view: ^0.3.1
   image_picker: ^1.1.2
   http: ^1.2.1
   permission_handler: ^11.3.1
@@ -39,3 +40,9 @@ flutter:
   assets:
   - assets/
   - .env
+  fonts:
+    - family: Rubik
+      fonts:
+        - asset: assets/Rubik-VariableFont_wght.ttf
+        - asset: assets/Rubik-Bold.ttf
+          weight: 900

@@ -11,12 +11,14 @@ class CategoryExpenseList extends StatelessWidget {
   final int year;
   final String userId;
 
-  CategoryExpenseList({required this.month, required this.year, required this.userId});
+  CategoryExpenseList(
+      {required this.month, required this.year, required this.userId});
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, double>>(
-      future: Provider.of<TransactionViewModel>(context, listen: false).fetchCategoryExpenses(userId, month, year),
+      future: Provider.of<TransactionViewModel>(context, listen: false)
+          .fetchCategoryExpenses(userId, month, year),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -26,7 +28,8 @@ class CategoryExpenseList extends StatelessWidget {
           return Center(child: Text('No category expenses found'));
         } else {
           final categoryExpenses = snapshot.data!;
-          final totalExpenses = categoryExpenses.values.fold(0.0, (sum, item) => sum + item);
+          final totalExpenses =
+              categoryExpenses.values.fold(0.0, (sum, item) => sum + item);
 
           return Column(
             children: categoryExpenses.keys.map((category) {
@@ -45,7 +48,12 @@ class CategoryExpenseList extends StatelessWidget {
                 margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 0),
                 child: ListTile(
                   onTap: () {
-                    goRouter.pushNamed("expensesByCategory", pathParameters : {'userId': userId, 'category' : category, 'month' : month.toString(), 'year' : year.toString()});
+                    goRouter.pushNamed("expensesByCategory", pathParameters: {
+                      'userId': userId,
+                      'category': category,
+                      'month': month.toString(),
+                      'year': year.toString()
+                    });
                   },
                   leading: CircleAvatar(
                     backgroundColor: categoryData.color.withOpacity(0.2),
@@ -60,7 +68,8 @@ class CategoryExpenseList extends StatelessWidget {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('${(percentage * 100).toStringAsFixed(2)}%', style: TextStyle()),
+                      Text('${(percentage * 100).toStringAsFixed(2)}%',
+                          style: TextStyle()),
                       SizedBox(height: 4.0),
                       LinearProgressIndicator(
                         value: percentage,
@@ -73,7 +82,10 @@ class CategoryExpenseList extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 4),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(4),
-                      color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .secondary
+                          .withOpacity(0.1),
                     ),
                     child: Text(
                       '- ' + amount.toString() + ' PLN',
