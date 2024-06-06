@@ -155,7 +155,7 @@ class _TransactionFormViewState extends State<TransactionFormView> {
                       'Respond only in the format provided.\n\n'
                       'For label : Carefully analyze the bill to identify the merchant name, considering different layouts and potential abbreviations. Look for names associated with store chains, addresses, or specific locations mentioned on the bill. If a clear and specific merchant name is found, use it. Keep in mind that the bill might be in languages other than English.\n\n'
                       'For the merchant name: put null'
-                      'For categories, use "Miscellaneous" if unsure (you can infer the category from the merchant name).\n\n'
+                      'For categories, use "Other" if unsure (you can infer the category from the merchant name).\n\n'
                       'Categories: Groceries, Rent, Utilities, Entertainment, Transportation, Health, Insurance, Education, Clothing, Gifts, Food, Travel, Investments, Savings, Salary, Bonus, Interest, Dividends, Refund, Other',
                 },
                 {
