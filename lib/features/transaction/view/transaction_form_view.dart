@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:banking_app/extensions/color_extension.dart';
 import 'package:banking_app/features/transaction/model/transaction_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -95,7 +96,6 @@ class _TransactionFormViewState extends State<TransactionFormView> {
     }
   }
 
-
   Future<void> _pickImage() async {
     final status = await Permission.camera.request();
     if (status.isGranted) {
@@ -149,8 +149,7 @@ class _TransactionFormViewState extends State<TransactionFormView> {
               "content": [
                 {
                   "type": "text",
-                  "text":
-                  'Scan the bill and extract the following details: Label;Amount;Merchant Name;Category;Date (DateTime type); provide them in json style with all of String type\n'
+                  "text": 'Scan the bill and extract the following details: Label;Amount;Merchant Name;Category;Date (DateTime type); provide them in json style with all of String type\n'
                       'If any detail is missing, use "null" for that field. If the photo is not clear, respond with "null" for all fields.\n'
                       'Respond only in the format provided.\n\n'
                       'For label : Carefully analyze the bill to identify the merchant name, considering different layouts and potential abbreviations. Look for names associated with store chains, addresses, or specific locations mentioned on the bill. If a clear and specific merchant name is found, use it. Keep in mind that the bill might be in languages other than English.\n\n'
@@ -161,8 +160,8 @@ class _TransactionFormViewState extends State<TransactionFormView> {
                 {
                   "type": "image_url",
                   "image_url": {
-                    "url":'data:image/jpeg;base64,$base64Image',
-                    "detail":"high"
+                    "url": 'data:image/jpeg;base64,$base64Image',
+                    "detail": "high"
                   }
                 }
               ]
@@ -180,18 +179,23 @@ class _TransactionFormViewState extends State<TransactionFormView> {
         print('Image uploaded successfully');
         print(responseData);
 
-        final transactionController = Provider.of<TransactionViewModel>(context, listen: false);
+        final transactionController =
+            Provider.of<TransactionViewModel>(context, listen: false);
         print('OpenAI Response: $responseData');
 
-        if (responseData.containsKey('choices') && responseData['choices'].isNotEmpty) {
-          final contentString = responseData['choices'][0]['message']['content'];
+        if (responseData.containsKey('choices') &&
+            responseData['choices'].isNotEmpty) {
+          final contentString =
+              responseData['choices'][0]['message']['content'];
 
           // Extract JSON from the content string
           int jsonStartIndex = contentString.indexOf('{');
           int jsonEndIndex = contentString.lastIndexOf('}');
           if (jsonStartIndex != -1 && jsonEndIndex != -1) {
-            var jsonString = contentString.substring(jsonStartIndex, jsonEndIndex + 1);
-            var openAiResponse = OpenAiResponse.fromJson(json.decode(jsonString));
+            var jsonString =
+                contentString.substring(jsonStartIndex, jsonEndIndex + 1);
+            var openAiResponse =
+                OpenAiResponse.fromJson(json.decode(jsonString));
 
             print('Label: ${openAiResponse.label}');
             print('Amount: ${openAiResponse.amount}');
@@ -199,18 +203,23 @@ class _TransactionFormViewState extends State<TransactionFormView> {
             print('Category: ${openAiResponse.category}');
             print('Date: ${openAiResponse.date}');
 
-
             setState(() {
-              transactionController.labelController.text = openAiResponse.label == 'null' ? '' : openAiResponse.label;
-              transactionController.amountController.text = openAiResponse.amount.toString();
-              transactionController.bankNameController.text = openAiResponse.merchantName;
-              transactionController.categoryController.text = openAiResponse.category;
-              transactionController.dateTimeController.text = openAiResponse.date;
+              transactionController.labelController.text =
+                  openAiResponse.label == 'null' ? '' : openAiResponse.label;
+              transactionController.amountController.text =
+                  openAiResponse.amount.toString();
+              transactionController.bankNameController.text =
+                  openAiResponse.merchantName;
+              transactionController.categoryController.text =
+                  openAiResponse.category;
+              transactionController.dateTimeController.text =
+                  openAiResponse.date;
             });
 
             print('Label: ${transactionController.labelController.text}');
             print('Amount: ${transactionController.amountController.text}');
-            print('Merchant Name: ${transactionController.bankNameController.text}');
+            print(
+                'Merchant Name: ${transactionController.bankNameController.text}');
             print('Category: ${transactionController.categoryController.text}');
             print('Date: ${transactionController.dateTimeController.text}');
 
@@ -249,6 +258,18 @@ class _TransactionFormViewState extends State<TransactionFormView> {
     return Scaffold(
       appBar: AppBar(
         title: Text(isEditing ? 'Edit transaction' : 'New transaction'),
+        actions: [
+          ButtonBar(
+            alignment: MainAxisAlignment.center,
+            children: [
+              TextButton.icon(
+                onPressed: _pickImage,
+                icon: Icon(IconData(0xe0b7, fontFamily: 'MaterialIcons')),
+                label: Text('Smart scan'),
+              ),
+            ],
+          ),
+        ],
       ),
       body: Stack(
         children: [
@@ -281,7 +302,8 @@ class _TransactionFormViewState extends State<TransactionFormView> {
                           ],
                           selected: {transactionController.typeController.text},
                           onSelectionChanged: (selected) {
-                            transactionController.updateSelectedTransactionType(selected.first);
+                            transactionController
+                                .updateSelectedTransactionType(selected.first);
                             transactionController.notify();
                           },
                         ),
@@ -300,7 +322,9 @@ class _TransactionFormViewState extends State<TransactionFormView> {
                       border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.description_outlined),
                     ),
-                    validator: ValidationBuilder().required('Title is required').build(),
+                    validator: ValidationBuilder()
+                        .required('Title is required')
+                        .build(),
                     onChanged: (value) => _validateForm(),
                   ),
                   SizedBox(height: 20),
@@ -319,7 +343,8 @@ class _TransactionFormViewState extends State<TransactionFormView> {
                       prefixIcon: Icon(Icons.payments_outlined),
                     ),
                     validator: ValidationBuilder()
-                        .regExp(RegExp(r'^(?=.*[1-9]).+$'), 'Amount cannot be null')
+                        .regExp(
+                            RegExp(r'^(?=.*[1-9]).+$'), 'Amount cannot be null')
                         .required('Amount is required')
                         .build(),
                     onChanged: (value) => _validateForm(),
@@ -331,7 +356,8 @@ class _TransactionFormViewState extends State<TransactionFormView> {
                         child: TextFormField(
                           onTap: () async {
                             // Stops keyboard from appearing
-                            FocusScope.of(context).requestFocus(new FocusNode());
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
                             // Show DatePicker
                             final selectedDate = await showDatePicker(
                               context: context,
@@ -361,7 +387,8 @@ class _TransactionFormViewState extends State<TransactionFormView> {
                         child: TextFormField(
                           onTap: () async {
                             // Stops keyboard from appearing
-                            FocusScope.of(context).requestFocus(new FocusNode());
+                            FocusScope.of(context)
+                                .requestFocus(new FocusNode());
                             // Show TimePicker
                             final selectedTime = await showTimePicker(
                               context: context,
@@ -401,24 +428,13 @@ class _TransactionFormViewState extends State<TransactionFormView> {
                           border: OutlineInputBorder(),
                           prefixIcon: Icon(
                             categories[transactionController
-                                .categoryController.text]
-                                ?.icon ??
+                                        .categoryController.text]
+                                    ?.icon ??
                                 Icons.question_mark,
                           ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  ButtonBar(
-                    alignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton.icon(
-                        onPressed: _pickImage,
-                        icon: Icon(Icons.camera_alt_outlined),
-                        label: Text('Scan bill'),
-                      ),
-                    ],
                   ),
                   SizedBox(height: 20),
                   ValueListenableBuilder<bool>(
@@ -432,8 +448,8 @@ class _TransactionFormViewState extends State<TransactionFormView> {
                               Expanded(
                                 child: AnimatedSwitcher(
                                   duration: Duration(milliseconds: 300),
-                                  transitionBuilder:
-                                      (Widget child, Animation<double> animation) {
+                                  transitionBuilder: (Widget child,
+                                      Animation<double> animation) {
                                     return FadeTransition(
                                         opacity: animation, child: child);
                                   },
@@ -444,52 +460,53 @@ class _TransactionFormViewState extends State<TransactionFormView> {
                                     child: FilledButton(
                                       onPressed: isFormValid && !isLoading
                                           ? () async {
-                                        _isLoading.value = true;
-                                        // Check if form is valid
-                                        if (_formKey.currentState!
-                                            .validate()) {
-                                          try {
-                                            final transaction =
-                                                widget.transaction;
-                                            if (transaction != null) {
-                                              await transactionController
-                                                  .updateTransaction(
-                                                  userId, transaction);
-                                              InfoFloatingSnackbar.show(
-                                                  context,
-                                                  'Transaction edited');
-                                            } else {
-                                              await transactionController
-                                                  .addTransaction(userId);
-                                              InfoFloatingSnackbar.show(
-                                                  context,
-                                                  'Transaction added');
+                                              _isLoading.value = true;
+                                              // Check if form is valid
+                                              if (_formKey.currentState!
+                                                  .validate()) {
+                                                try {
+                                                  final transaction =
+                                                      widget.transaction;
+                                                  if (transaction != null) {
+                                                    await transactionController
+                                                        .updateTransaction(
+                                                            userId,
+                                                            transaction);
+                                                    InfoFloatingSnackbar.show(
+                                                        context,
+                                                        'Transaction edited');
+                                                  } else {
+                                                    await transactionController
+                                                        .addTransaction(userId);
+                                                    InfoFloatingSnackbar.show(
+                                                        context,
+                                                        'Transaction added');
+                                                  }
+                                                  context.pop();
+                                                } catch (e) {
+                                                  InfoFloatingSnackbar.show(
+                                                      context,
+                                                      isEditing
+                                                          ? 'Failed to edit transaction'
+                                                          : 'Failed to add transaction');
+                                                } finally {
+                                                  _isLoading.value = false;
+                                                }
+                                              }
                                             }
-                                            context.pop();
-                                          } catch (e) {
-                                            InfoFloatingSnackbar.show(
-                                                context,
-                                                isEditing
-                                                    ? 'Failed to edit transaction'
-                                                    : 'Failed to add transaction');
-                                          } finally {
-                                            _isLoading.value = false;
-                                          }
-                                        }
-                                      }
                                           : null,
                                       child: isLoading
                                           ? SizedBox(
-                                        width: 24,
-                                        height: 24,
-                                        child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                          strokeWidth: 2,
-                                        ),
-                                      )
+                                              width: 24,
+                                              height: 24,
+                                              child: CircularProgressIndicator(
+                                                color: Colors.white,
+                                                strokeWidth: 2,
+                                              ),
+                                            )
                                           : Text(isEditing
-                                          ? 'Edit transaction'
-                                          : 'Add transaction'),
+                                              ? 'Edit transaction'
+                                              : 'Add transaction'),
                                       style: ButtonStyle(
                                         visualDensity: VisualDensity(
                                           vertical: 2,
@@ -523,7 +540,8 @@ class _TransactionFormViewState extends State<TransactionFormView> {
     );
   }
 }
-  String formatToTime(String dateTimeString) {
+
+String formatToTime(String dateTimeString) {
   try {
     final DateTime dateTime = DateTime.parse(dateTimeString);
     final DateFormat timeFormat = DateFormat('HH:mm');
