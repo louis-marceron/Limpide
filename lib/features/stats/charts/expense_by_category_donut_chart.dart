@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import '../../transaction/model/transaction_model.dart';
 import '../../../common_widgets/category_icons.dart';
-import 'package:flutter/scheduler.dart'; // Add this import
 
 class ExpenseDonutChart extends StatefulWidget {
   final List<Transaction> transactions;
@@ -53,23 +52,24 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
             child: Text('No expenses found for this month'),
           )
         : SfCircularChart(
-      title: ChartTitle(text: 'Expenses by Category'),
-      legend: Legend(isVisible: true),
-      series: <CircularSeries>[
-        DoughnutSeries<ChartData, String>(
-          dataSource: data,
-          xValueMapper: (ChartData data, _) => data.category,
-          yValueMapper: (ChartData data, _) => data.amount,
-          pointColorMapper: (ChartData data, _) => categories[data.category]?.color ?? Colors.grey,
-          legendIconType: LegendIconType.seriesType,
-          dataLabelSettings: DataLabelSettings(
-            isVisible: true,
-            labelPosition: ChartDataLabelPosition.outside,
-          ),
-          animationDuration: 500,
-        ),
-      ],
-    );
+            // title: ChartTitle(text: 'Expenses by Category'),
+            legend: Legend(isVisible: true),
+            series: <CircularSeries>[
+              DoughnutSeries<ChartData, String>(
+                dataSource: data,
+                xValueMapper: (ChartData data, _) => data.category,
+                yValueMapper: (ChartData data, _) => data.amount,
+                pointColorMapper: (ChartData data, _) =>
+                    categories[data.category]?.color ?? Colors.grey,
+                legendIconType: LegendIconType.seriesType,
+                dataLabelSettings: DataLabelSettings(
+                  isVisible: false,
+                  labelPosition: ChartDataLabelPosition.outside,
+                ),
+                animationDuration: 0,
+              ),
+            ],
+          );
   }
 }
 

@@ -43,9 +43,8 @@ class CategoryExpenseList extends StatelessWidget {
               }
 
               return Card(
-                elevation: 0,
                 color: Theme.of(context).colorScheme.surface,
-                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 0),
+                margin: EdgeInsets.all(0),
                 child: ListTile(
                   onTap: () {
                     goRouter.pushNamed("expensesByCategory", pathParameters: {

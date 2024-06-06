@@ -1,3 +1,4 @@
+import 'package:banking_app/extensions/text_extension.dart';
 import 'package:banking_app/features/transaction/view/monthly_amounts_summary_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -88,10 +89,12 @@ class _MonthStatisticsViewState extends State<MonthStatisticsView> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 16),
+                        SizedBox(height: 8),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            Text('Expenses by category',
+                                style: context.labelMedium),
                             TextButton.icon(
                               style: TextButton.styleFrom(
                                 iconColor:
@@ -101,12 +104,13 @@ class _MonthStatisticsViewState extends State<MonthStatisticsView> {
                               icon: Icon(widget.showGraph
                                   ? Icons.arrow_drop_down_sharp
                                   : Icons.arrow_right_sharp),
-                              label: Text('Show/Hide Graph'),
+                              label: Text(widget.showGraph
+                                  ? 'Hide Graph'
+                                  : 'Show Graph'),
                               onPressed: widget.toggleShowGraph,
                             ),
                           ],
                         ),
-                        SizedBox(height: 16),
                         if (widget.showGraph)
                           ExpenseDonutChart(
                             transactions: transactions,
