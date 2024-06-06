@@ -10,7 +10,8 @@ class StatisticsView extends StatefulWidget {
   _StatisticsViewState createState() => _StatisticsViewState();
 }
 
-class _StatisticsViewState extends State<StatisticsView> with SingleTickerProviderStateMixin {
+class _StatisticsViewState extends State<StatisticsView>
+    with SingleTickerProviderStateMixin {
   late int _selectedMonth;
   late int _selectedYear;
   late int _oldestMonth;
@@ -42,18 +43,24 @@ class _StatisticsViewState extends State<StatisticsView> with SingleTickerProvid
   }
 
   Future<void> _fetchOldestTransactionDate() async {
-    final transactionController = Provider.of<TransactionViewModel>(context, listen: false);
+    final transactionController =
+        Provider.of<TransactionViewModel>(context, listen: false);
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null) {
       final transactions = transactionController.transactions;
       if (transactions.isNotEmpty) {
-        final oldestTransaction = transactions.reduce((a, b) => a.date.isBefore(b.date) ? a : b);
+        final oldestTransaction =
+            transactions.reduce((a, b) => a.date.isBefore(b.date) ? a : b);
         final now = DateTime.now();
         setState(() {
           _oldestMonth = oldestTransaction.date.month;
           _oldestYear = oldestTransaction.date.year;
-          _totalMonths = (now.year - _oldestYear) * 12 + now.month - _oldestMonth + 1;
-          _tabController = TabController(length: _totalMonths, vsync: this, initialIndex: _totalMonths - 1);
+          _totalMonths =
+              (now.year - _oldestYear) * 12 + now.month - _oldestMonth + 1;
+          _tabController = TabController(
+              length: _totalMonths,
+              vsync: this,
+              initialIndex: _totalMonths - 1);
           _tabController.addListener(_handleTabSelection);
           _isTabControllerInitialized = true;
         });
@@ -109,7 +116,8 @@ class _StatisticsViewState extends State<StatisticsView> with SingleTickerProvid
                   tabs: List<Widget>.generate(_totalMonths, (index) {
                     final monthIndex = (_oldestMonth + index - 1) % 12 + 1;
                     final yearOffset = (_oldestMonth + index - 1) ~/ 12;
-                    final monthYear = DateTime(_oldestYear + yearOffset, monthIndex);
+                    final monthYear =
+                        DateTime(_oldestYear + yearOffset, monthIndex);
                     final monthName = getMonthName(monthIndex);
                     return Tab(text: '$monthName ${monthYear.year}');
                   }),

@@ -24,28 +24,31 @@ class _TransactionsViewState extends State<TransactionsView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // Rebuild the view when the transaction list changes
-      body: FutureBuilder(
-        future: transactionsFuture,
-        builder: (context, AsyncSnapshot<void> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text("Error: ${snapshot.error}"));
-          } else {
-            return TransactionListWidget();
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton.large(
-        onPressed: () {
-          // Reset transaction and navigate to add transaction screen
-          transactionVM.resetTransaction();
-          context.push('/add');
-        },
-        child: Icon(Icons.add),
-        tooltip: 'New transaction',
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Scaffold(
+        // Rebuild the view when the transaction list changes
+        body: FutureBuilder(
+          future: transactionsFuture,
+          builder: (context, AsyncSnapshot<void> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (snapshot.hasError) {
+              return Center(child: Text("Error: ${snapshot.error}"));
+            } else {
+              return TransactionListWidget();
+            }
+          },
+        ),
+        floatingActionButton: FloatingActionButton.large(
+          onPressed: () {
+            // Reset transaction and navigate to add transaction screen
+            transactionVM.resetTransaction();
+            context.push('/add');
+          },
+          child: Icon(Icons.add),
+          tooltip: 'New transaction',
+        ),
       ),
     );
   }

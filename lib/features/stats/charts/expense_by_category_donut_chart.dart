@@ -6,7 +6,8 @@ import '../../../common_widgets/category_icons.dart';
 class ExpenseDonutChart extends StatefulWidget {
   final List<Transaction> transactions;
 
-  const ExpenseDonutChart({Key? key, required this.transactions}) : super(key: key);
+  const ExpenseDonutChart({Key? key, required this.transactions})
+      : super(key: key);
 
   @override
   _ExpenseDonutChartState createState() => _ExpenseDonutChartState();
@@ -30,7 +31,7 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
       if (transaction.type == 'Expense') {
         expenseByCategory.update(
           transaction.category!,
-              (value) => value + transaction.amount,
+          (value) => value + transaction.amount,
           ifAbsent: () => transaction.amount,
         );
       }
@@ -45,25 +46,26 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
   Widget build(BuildContext context) {
     return data.isEmpty
         ? Center(
-      child: Text('No expenses found for this month'),
-    )
+            child: Text('No expenses found for this month'),
+          )
         : SfCircularChart(
-      title: ChartTitle(text: 'Expenses by Category'),
-      legend: Legend(isVisible: true),
-      series: <CircularSeries>[
-        DoughnutSeries<ChartData, String>(
-          dataSource: data,
-          xValueMapper: (ChartData data, _) => data.category,
-          yValueMapper: (ChartData data, _) => data.amount,
-          pointColorMapper: (ChartData data, _) => categories[data.category]?.color ?? Colors.grey,
-          legendIconType: LegendIconType.seriesType,
-          dataLabelSettings: DataLabelSettings(
-            isVisible: true,
-            labelPosition: ChartDataLabelPosition.outside,
-          ),
-        ),
-      ],
-    );
+            title: ChartTitle(text: 'Expenses by Category'),
+            legend: Legend(isVisible: true),
+            series: <CircularSeries>[
+              DoughnutSeries<ChartData, String>(
+                dataSource: data,
+                xValueMapper: (ChartData data, _) => data.category,
+                yValueMapper: (ChartData data, _) => data.amount,
+                pointColorMapper: (ChartData data, _) =>
+                    categories[data.category]?.color ?? Colors.grey,
+                legendIconType: LegendIconType.seriesType,
+                dataLabelSettings: DataLabelSettings(
+                  isVisible: true,
+                  labelPosition: ChartDataLabelPosition.outside,
+                ),
+              ),
+            ],
+          );
   }
 }
 

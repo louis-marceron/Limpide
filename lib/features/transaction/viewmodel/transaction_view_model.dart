@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
@@ -9,6 +11,7 @@ class TransactionViewModel with ChangeNotifier {
   // For caching the transactions so that we don't have to fetch them again
   bool _hasFetchedTransactions = false;
   bool _isFetchingTransactions = false;
+  Completer<List<Transaction>>? _transactionCompleter;
 
   TransactionService _transactionService = TransactionService();
   TextEditingController labelController = TextEditingController();
@@ -63,17 +66,36 @@ class TransactionViewModel with ChangeNotifier {
       .toList();
 
   Future<List<Transaction>> fetchTransactions(String userId) async {
-    if (!_isFetchingTransactions && !_hasFetchedTransactions) {
-      // Prevent from doing multiple fetch when this function is called multiple
-      // time at once
-      _isFetchingTransactions = true;
-      _transactions = await _transactionService.fetchTransactions(userId);
-      _isFetchingTransactions = false;
-      _hasFetchedTransactions = true;
-      notifyListeners();
+    // Check if there is an ongoing request
+    if (_transactionCompleter != null) {
+      print('Waiting for the ongoing request to complete');
+      return _transactionCompleter!.future;
     }
 
-    return _transactions;
+    // Create a new Completer
+    _transactionCompleter = Completer<List<Transaction>>();
+    final completerFuture = _transactionCompleter!.future;
+
+    try {
+      if (!_hasFetchedTransactions) {
+        print('Fetching transactions');
+        _transactions = await _transactionService.fetchTransactions(userId);
+        print('Finished fetching transactions');
+        _hasFetchedTransactions = true;
+        notifyListeners();
+      }
+
+      // Complete the Completer with the fetched transactions
+      _transactionCompleter!.complete(_transactions);
+    } catch (e) {
+      // If an error occurs, complete the Completer with the error
+      _transactionCompleter!.completeError(e);
+    } finally {
+      // Reset the Completer to null after completion
+      _transactionCompleter = null;
+    }
+
+    return completerFuture;
   }
 
   Future<List<Transaction>> fetchTransactionsForCurrentUser() async {
@@ -227,9 +249,13 @@ class TransactionViewModel with ChangeNotifier {
     return total;
   }
 
-  Future<List<Transaction>> fetchAllTransactionForMonth(String userId, int month, int year) async {
+  Future<List<Transaction>> fetchAllTransactionForMonth(
+      String userId, int month, int year) async {
     await fetchTransactions(userId);
-    return _transactions.where((transaction) => transaction.date.month == month && transaction.date.year == year).toList();
+    return _transactions
+        .where((transaction) =>
+            transaction.date.month == month && transaction.date.year == year)
+        .toList();
   }
 
   Future<double> fetchExpensesForYear(String userId, int year) async {
@@ -254,13 +280,16 @@ class TransactionViewModel with ChangeNotifier {
     typeController.text = selectedType;
   }
 
-  Future<Map<String, double>> fetchCategoryExpenses(String userId, int month, int year) async {
-    List<Transaction> transactions = await fetchAllTransactionForMonth(userId, month, year);
+  Future<Map<String, double>> fetchCategoryExpenses(
+      String userId, int month, int year) async {
+    List<Transaction> transactions =
+        await fetchAllTransactionForMonth(userId, month, year);
     Map<String, double> categoryExpenses = {};
 
     for (var transaction in transactions) {
       if (transaction.type == 'Expense' && transaction.category != null) {
-        categoryExpenses.update(transaction.category!, (value) => value + transaction.amount,
+        categoryExpenses.update(
+            transaction.category!, (value) => value + transaction.amount,
             ifAbsent: () => transaction.amount);
       }
     }
@@ -275,9 +304,16 @@ class TransactionViewModel with ChangeNotifier {
     return sortedCategoryExpenses;
   }
 
-  Future<List<Transaction>> fetchExpenseTransactionsForCategoryAndDate(String userId, String category, String month, String year) async {
+  Future<List<Transaction>> fetchExpenseTransactionsForCategoryAndDate(
+      String userId, String category, String month, String year) async {
     await fetchTransactions(userId);
-    return _transactions.where((transaction) => transaction.type == 'Expense' && transaction.category == category && transaction.date.month == int.parse(month) && transaction.date.year == int.parse(year)).toList();
+    return _transactions
+        .where((transaction) =>
+            transaction.type == 'Expense' &&
+            transaction.category == category &&
+            transaction.date.month == int.parse(month) &&
+            transaction.date.year == int.parse(year))
+        .toList();
   }
 
   void notify() {

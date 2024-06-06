@@ -40,7 +40,7 @@ class TransactionListByCategoriesWidget extends StatelessWidget {
     return FutureBuilder<List<Transaction>>(
       future: Provider.of<TransactionViewModel>(context, listen: false)
           .fetchExpenseTransactionsForCategoryAndDate(
-          userId, category, month, year),
+              userId, category, month, year),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
@@ -48,7 +48,8 @@ class TransactionListByCategoriesWidget extends StatelessWidget {
           return Center(child: Text("Error: ${snapshot.error}"));
         } else {
           final transactions = snapshot.data!;
-          final transactionsByDay = _groupTransactionsByTimePeriod(transactions);
+          final transactionsByDay =
+              _groupTransactionsByTimePeriod(transactions);
 
           return ListView.separated(
             separatorBuilder: (context, index) => SizedBox(height: 20),

@@ -95,16 +95,15 @@ final goRouter = GoRouter(
     ),
     GoRoute(
       path: '/expenses-by-category/:category/:month/:year/:userId',
-      name : 'expensesByCategory',
+      name: 'expensesByCategory',
       pageBuilder: (context, state) => NoTransitionPage(
-        //FIXME
-        child: TransactionsByCategoryView(
-          userId: state.pathParameters['userId']!,
-          category: state.pathParameters['category']!,
-          month: state.pathParameters['month']!,
-          year: state.pathParameters['year']!,
-        )
-      ),
+          //FIXME
+          child: TransactionsByCategoryView(
+        userId: state.pathParameters['userId']!,
+        category: state.pathParameters['category']!,
+        month: state.pathParameters['month']!,
+        year: state.pathParameters['year']!,
+      )),
     ),
     GoRoute(
       path: Routes.authSelectionScreen,
