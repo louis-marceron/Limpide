@@ -1,3 +1,4 @@
+import 'package:banking_app/features/transaction/view/monthly_amounts_summary_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../transaction/model/transaction_model.dart';
@@ -69,10 +70,23 @@ class _MonthStatisticsViewState extends State<MonthStatisticsView> {
                     padding: const EdgeInsets.all(0.0),
                     child: Column(
                       children: [
-                        BalanceSummaryWidget(
-                          title: null,
-                          income: totalIncome,
-                          expenses: totalExpenses,
+                        SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: MonthlyAmountsSummaryWidget(
+                                amount: totalIncome,
+                                isIncome: true,
+                              ),
+                            ),
+                            SizedBox(width: 16),
+                            Expanded(
+                              child: MonthlyAmountsSummaryWidget(
+                                amount: totalExpenses,
+                                isIncome: false,
+                              ),
+                            ),
+                          ],
                         ),
                         SizedBox(height: 16),
                         Row(
@@ -114,4 +128,3 @@ class _MonthStatisticsViewState extends State<MonthStatisticsView> {
     );
   }
 }
-
