@@ -38,7 +38,7 @@ class _HomeViewState extends State {
           late double totalBalance;
           late double expenseOfThisMonth;
           late double incomeOfThisMonth;
-          late List<Transaction> recentTransactions;
+          late List<Transaction> transactions;
 
           return FutureBuilder(
             future: Future.wait<void>(
@@ -54,7 +54,8 @@ class _HomeViewState extends State {
                     .then((result) => incomeOfThisMonth = result),
                 transactionController
                     .fetchTransactions(userId)
-                    .then((result) => recentTransactions = result),
+// numbers.sort((a, b) => a.length.compareTo(b.length));
+                    .then((result) => transactions = result)
               ],
             ),
             builder: (context, snapshot) {
@@ -65,6 +66,8 @@ class _HomeViewState extends State {
                   child: Text('Error loading the data'),
                 );
               } else if (snapshot.hasData) {
+                transactions.sort((a, b) => b.date.compareTo(a.date));
+
                 return Column(
                   children: [
                     Container(
@@ -108,7 +111,7 @@ class _HomeViewState extends State {
                       ],
                     ),
                     SizedBox(height: 8),
-                    if (recentTransactions.isNotEmpty)
+                    if (transactions.isNotEmpty)
                       Expanded(
                         child: Card(
                           // color: context.surface,
@@ -132,7 +135,7 @@ class _HomeViewState extends State {
                                 );
                               },
                               children: <Widget>[
-                                for (final transaction in recentTransactions)
+                                for (final transaction in transactions)
                                   TransactionItemWidget(
                                     transaction: transaction,
                                     key: ValueKey(transaction.transactionId),
