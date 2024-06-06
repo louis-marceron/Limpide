@@ -201,30 +201,24 @@ class TransactionItemWidget extends StatelessWidget {
 
 class CategoryIcon extends StatelessWidget {
   final IconData icon;
-  final Color? colorFilter;
+  final Color colorFilter;
 
   CategoryIcon({
     super.key,
     required this.icon,
-    this.colorFilter,
+    required this.colorFilter,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ColorFiltered(
-      colorFilter: ColorFilter.mode(
-        colorFilter?.withOpacity(0.14) ?? Colors.transparent,
-        BlendMode.srcATop,
+    return CircleAvatar(
+      backgroundColor: colorFilter.withOpacity(0.2),
+      child: Icon(
+        icon,
+        color: colorFilter.withOpacity(0.9),
+        size: 20,
       ),
-      child: CircleAvatar(
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        child: Icon(
-          icon,
-          color: Theme.of(context).colorScheme.onSurfaceVariant,
-          size: 20,
-        ),
-        radius: 20,
-      ),
+      radius: 20,
     );
   }
 }
