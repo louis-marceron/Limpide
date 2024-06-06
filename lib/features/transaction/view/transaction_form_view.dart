@@ -150,11 +150,11 @@ class _TransactionFormViewState extends State<TransactionFormView> {
                 {
                   "type": "text",
                   "text":
-                  'Scan the bill and extract the following details: Label;Amount;Merchant Name;Category;Date (DateTime type); provide them in json style\n'
-                      'If any detail is missing, use "null" for that field. If the photo is not clear, respond with "null".\n'
+                  'Scan the bill and extract the following details: Label;Amount;Merchant Name;Category;Date (DateTime type); provide them in json style with all of String type\n'
+                      'If any detail is missing, use "null" for that field. If the photo is not clear, respond with "null" for all fields.\n'
                       'Respond only in the format provided.\n\n'
-                      'For label, provide a short description of 3 words max.\n\n'
-                      'For the merchant name: Carefully analyze the bill to identify the merchant name, considering different layouts and potential abbreviations. Look for names associated with store chains, addresses, or specific locations mentioned on the bill. If a clear and specific merchant name is found, use it. If the name on the bill seems like a generic term or something that isn\'t a real business name (e.g., "Receipt", "Invoice", etc.), respond with "null". Keep in mind that the bill might be in languages other than English.\n\n'
+                      'For label : Carefully analyze the bill to identify the merchant name, considering different layouts and potential abbreviations. Look for names associated with store chains, addresses, or specific locations mentioned on the bill. If a clear and specific merchant name is found, use it. Keep in mind that the bill might be in languages other than English.\n\n'
+                      'For the merchant name: put null'
                       'For categories, use "Miscellaneous" if unsure (you can infer the category from the merchant name).\n\n'
                       'Categories: Groceries, Electronics, Clothing, Restaurant, Entertainment, Transportation, Health, Miscellaneous',
                 },
@@ -198,8 +198,9 @@ class _TransactionFormViewState extends State<TransactionFormView> {
             print('Category: ${openAiResponse.category}');
             print('Date: ${openAiResponse.date}');
 
+
             setState(() {
-              transactionController.labelController.text = openAiResponse.label;
+              transactionController.labelController.text = openAiResponse.label == 'null' ? '' : openAiResponse.label;
               transactionController.amountController.text = openAiResponse.amount.toString();
               transactionController.bankNameController.text = openAiResponse.merchantName;
               transactionController.categoryController.text = openAiResponse.category;
