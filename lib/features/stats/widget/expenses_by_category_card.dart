@@ -43,6 +43,7 @@ class CategoryExpenseList extends StatelessWidget {
               }
 
               return Card(
+                elevation: 0,
                 color: Theme.of(context).colorScheme.surface,
                 margin: EdgeInsets.all(0),
                 child: ListTile(
