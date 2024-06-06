@@ -6,6 +6,7 @@ import 'package:banking_app/features/transaction/viewmodel/transaction_view_mode
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:overflow_view/overflow_view.dart';
 import 'package:provider/provider.dart';
 
 class HomeView extends StatefulWidget {
@@ -31,7 +32,7 @@ class _HomeViewState extends State {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.only(bottom: 16, top: 8),
       child: Consumer<TransactionViewModel>(
         builder: (context, transactionController, _) {
           late double totalBalance;
@@ -53,10 +54,7 @@ class _HomeViewState extends State {
                     .then((result) => incomeOfThisMonth = result),
                 transactionController
                     .fetchTransactions(userId)
-                    .then((result) => recentTransactions = result.sublist(
-                          0,
-                          result.length >= 3 ? 3 : result.length,
-                        )),
+                    .then((result) => recentTransactions = result),
               ],
             ),
             builder: (context, snapshot) {
@@ -69,8 +67,11 @@ class _HomeViewState extends State {
               } else if (snapshot.hasData) {
                 return Column(
                   children: [
-                    _AmountWidget(amount: totalBalance),
-                    SizedBox(height: 12),
+                    Container(
+                        constraints: BoxConstraints(maxHeight: 120),
+                        child:
+                            Center(child: _AmountWidget(amount: totalBalance))),
+                    SizedBox(height: 8),
                     Row(
                       children: [
                         Text(
@@ -88,7 +89,7 @@ class _HomeViewState extends State {
                             isIncome: true,
                           ),
                         ),
-                        SizedBox(width: 8),
+                        SizedBox(width: 16),
                         Expanded(
                           child: _MonthlyAmountsSummaryWidget(
                             amount: expenseOfThisMonth,
@@ -98,10 +99,48 @@ class _HomeViewState extends State {
                       ],
                     ),
                     SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Text(
+                          'Recent transactions',
+                          style: context.labelMedium,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 8),
                     if (recentTransactions.isNotEmpty)
-                      _TransactionGroupWidget(
-                        title: 'Recent transactions',
-                        transactions: recentTransactions,
+                      Expanded(
+                        child: Card(
+                          // color: context.surface,
+                          margin: EdgeInsets.all(0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            // Display the right amount of transactions based on the screen size
+                            child: OverflowView.flexible(
+                              spacing: 8,
+                              direction: Axis.vertical,
+                              builder: (context, _) {
+                                return TextButton(
+                                  onPressed: () => context.go('/transactions'),
+                                  child: Text(
+                                    'Show all transactions',
+                                    style: context.labelLarge!.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary),
+                                  ),
+                                );
+                              },
+                              children: <Widget>[
+                                for (final transaction in recentTransactions)
+                                  TransactionItemWidget(
+                                    transaction: transaction,
+                                    key: ValueKey(transaction.transactionId),
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
                       )
                   ],
                 );
@@ -128,6 +167,7 @@ class _MonthlyAmountsSummaryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: EdgeInsets.all(0),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
@@ -168,7 +208,7 @@ class _MonthlyAmountsSummaryWidget extends StatelessWidget {
                     ),
                     Text(
                       "PLN",
-                      style: context.bodySmall!.copyWith(
+                      style: context.labelSmall!.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -190,88 +230,37 @@ class _AmountWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.baseline,
-      textBaseline: TextBaseline.alphabetic,
-      children: [
-        SizedBox(height: 4),
-        Text(
-          amount.toStringAsFixed(2),
-          style: TextStyle(
-            fontFamily: 'Rubik',
-            fontWeight: FontWeight.bold,
-            fontSize: 40,
-          ),
-        ),
-        Text(
-          ' PLN',
-          style: TextStyle(
-            fontFamily: 'Rubik',
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// UGLY - duplicate of a widget, but who cares?
-class _TransactionGroupWidget extends StatelessWidget {
-  _TransactionGroupWidget({
-    super.key,
-    required this.title,
-    required this.transactions,
-  });
-
-  final String title;
-  final List<Transaction> transactions;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          this.title,
-          style: context.labelMedium,
-        ),
-        SizedBox(height: 8),
-        Card(
-          margin: EdgeInsets.all(0),
-          color: context.surfaceContainerLow,
-          // shadowColor: Colors.transparent,
-          child: Padding(
-            padding: const EdgeInsets.all(4.0),
-            child: Column(
-              children: [
-                ListView.separated(
-                  separatorBuilder: (context, index) => SizedBox(height: 4),
-                  shrinkWrap: true,
-                  // Prevent from scrolling inside a scrollable widget
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: this.transactions.length,
-                  itemBuilder: (context, index) {
-                    final transaction = this.transactions[index];
-                    return TransactionItemWidget(
-                      transaction: transaction,
-                      key: ValueKey(transaction.transactionId),
-                    );
-                  },
-                ),
-                TextButton(
-                  onPressed: () => context.go('/transactions'),
-                  child: Text(
-                    'Show all transactions',
-                    style: context.labelLarge!.copyWith(color: context.primary),
-                  ),
-                ),
-              ],
+    return ShaderMask(
+      shaderCallback: (bounds) => LinearGradient(
+        colors: [context.onSurfaceVariant, context.onSurface],
+        tileMode: TileMode.mirror,
+      ).createShader(bounds),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
+        children: [
+          SizedBox(height: 4),
+          Text(
+            amount.toStringAsFixed(2),
+            style: TextStyle(
+              fontFamily: 'Rubik',
+              fontWeight: FontWeight.bold,
+              fontSize: 40,
+              color: Colors.white, // Set to white for the gradient effect
             ),
           ),
-        ),
-      ],
+          Text(
+            ' PLN',
+            style: TextStyle(
+              fontFamily: 'Rubik',
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.white, // Set to white for the gradient effect
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
